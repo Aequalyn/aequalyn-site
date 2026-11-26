@@ -1,0 +1,43 @@
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Aequalyn, home">{{icon:mark}}<span class="wordmark" aria-hidden="true"></span></a>
+    <button class="icon-btn nav-burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">{{icon:menu}}</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/">Home</a></li>
+      <li class="nav-drop">
+        <button type="button" aria-expanded="false" aria-haspopup="true">Market {{icon:chevron}}</button>
+        <ul class="menu">
+          <li><a href="/market/">Everything <small>{{count:all}}</small></a></li>
+          <li><a href="/market/?kind=plugin">Plugins <small>{{count:plugin}}</small></a></li>
+          <li><a href="/market/?kind=theme">Themes <small>{{count:theme}}</small></a></li>
+          <li><a href="/market/?kind=wallpaper">Wallpapers <small>{{count:wallpaper}}</small></a></li>
+          <li><a href="/market/?kind=app">Apps <small>{{count:app}}</small></a></li>
+          <li><a href="/market/?kind=cursor">Cursors <small>{{count:cursor}}</small></a></li>
+          <li><a href="/market/?kind=look">Looks <small>{{count:look}}</small></a></li>
+        </ul>
+      </li>
+      <li><a href="/themes/">Themes</a></li>
+      <li><a href="/news/">News</a></li>
+      <li><a href="/team/">Team</a></li>
+      <li><a href="{{market_repo}}#publish">Publish</a></li>
+      <li><a href="/contact/">Contact</a></li>
+    </ul>
+    <div class="nav-tools">
+      <button class="icon-btn" type="button" data-flip aria-pressed="false" aria-label="Day or night">{{icon:sun}}</button>
+      <button class="icon-btn" type="button" data-picker aria-expanded="false" aria-controls="picker" aria-label="Choose a theme">{{icon:palette}}</button>
+      <a class="icon-btn" href="{{org}}" aria-label="Aequalyn on GitHub" rel="noopener">{{icon:github}}</a>
+    </div>
+  </div>
+</header>
+<div class="picker" id="picker" role="dialog" aria-label="Themes">
+  <header>
+    <input type="search" placeholder="Find a theme" aria-label="Find a theme">
+    <div class="segments" role="group" aria-label="Variant">
+      <button type="button" data-variant-filter="all" aria-pressed="true">All</button>
+      <button type="button" data-variant-filter="dark" aria-pressed="false">Night</button>
+      <button type="button" data-variant-filter="light" aria-pressed="false">Day</button>
+    </div>
+  </header>
+  <div class="list"></div>
+</div>
+<main id="main">

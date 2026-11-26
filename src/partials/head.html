@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<meta name="theme-color" content="#0e1718">
+<link rel="canonical" href="{{canonical}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="{{image}}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/Aequalyn-Regular.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css?v={{version}}">
+<script>
+/* wear the chosen theme before the first paint, on every page */
+(function(){try{var t=JSON.parse(localStorage.getItem("ae-theme")||"null");if(!t||!t.palette)return;var r=document.documentElement;
+for(var k in t.palette)r.style.setProperty("--ae-"+k,t.palette[k]);var e=t.border&&t.border.length?t.border:[t.palette.accentPrimary,t.palette.accentCyan];
+r.style.setProperty("--ae-edgeA",e[0]);r.style.setProperty("--ae-edgeB",e[1]||e[0]);r.dataset.variant=t.variant==="light"?"light":"dark";r.dataset.theme=t.id;
+}catch(_){}})();
+</script>
+<script src="/assets/js/site.js?v={{version}}" defer></script>
+{{scripts}}
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="backdrop" aria-hidden="true"><div class="glow"></div></div>
