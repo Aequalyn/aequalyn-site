@@ -1,0 +1,59 @@
+<!--meta {"title": "Market · Aequalyn", "description": "Plugins, themes, wallpapers, apps, cursors and looks for Aequalyn: built in, or published by the community and reviewed at a pinned commit.", "scripts": ["market"]} -->
+<div class="wrap">
+  <section class="market-head">
+    <span class="eyebrow">The Market</span>
+    <h1>Make it yours</h1>
+    <p>Everything the Aequalyn Store offers. Built-in items come with every install; community items are checked by the bot and approved by a reviewer at one commit. <span id="updated" class="muted"></span></p>
+    <nav class="kinds" aria-label="Kinds">
+      <a href="/market/" data-kind="">Everything <small>{{count:all}}</small></a>
+      <a href="/market/?kind=plugin" data-kind="plugin">Plugins <small>{{count:plugin}}</small></a>
+      <a href="/market/?kind=theme" data-kind="theme">Themes <small>{{count:theme}}</small></a>
+      <a href="/market/?kind=wallpaper" data-kind="wallpaper">Wallpapers <small>{{count:wallpaper}}</small></a>
+      <a href="/market/?kind=app" data-kind="app">Apps <small>{{count:app}}</small></a>
+      <a href="/market/?kind=cursor" data-kind="cursor">Cursors <small>{{count:cursor}}</small></a>
+      <a href="/market/?kind=look" data-kind="look">Looks <small>{{count:look}}</small></a>
+    </nav>
+  </section>
+
+  <div class="toolbar" role="search">
+    <input class="search" id="q" type="search" placeholder="Search names, descriptions, authors" aria-label="Search the Market">
+    <select id="source" aria-label="Source">
+      <option value="all">Built in and community</option>
+      <option value="built-in">Built in</option>
+      <option value="community">Community</option>
+    </select>
+    <span id="variant-wrap"><select id="variant" aria-label="Variant">
+      <option value="all">Night and day</option>
+      <option value="dark">Night</option>
+      <option value="light">Day</option>
+    </select></span>
+    <select id="sort" aria-label="Sort by">
+      <option value="featured">Featured</option>
+      <option value="rating">Best rated</option>
+      <option value="newest">Newest</option>
+      <option value="stars">Most GitHub stars</option>
+      <option value="hearts">Most hearts</option>
+      <option value="copies">Most installed (copied)</option>
+      <option value="views">Most viewed</option>
+      <option value="name">Name, A to Z</option>
+    </select>
+    <div class="segments" role="group" aria-label="View">
+      <button type="button" data-view="grid" title="Grid">{{icon:grid}}<span class="sr-only">Grid</span></button>
+      <button type="button" data-view="list" title="List">{{icon:list}}<span class="sr-only">List</span></button>
+      <button type="button" data-view="carousel" title="Carousel, like the theme picker">{{icon:carousel}}<span class="sr-only">Carousel</span></button>
+      <button type="button" data-view="filmstrip" title="Filmstrip, like the wallpaper picker">{{icon:film}}<span class="sr-only">Filmstrip</span></button>
+      <button type="button" data-view="spotlight" title="Spotlight, like the layout picker">{{icon:spotlight}}<span class="sr-only">Spotlight</span></button>
+    </div>
+  </div>
+
+  <div class="result-line"><span id="count"></span><span id="pageinfo"></span></div>
+  <div id="results" aria-live="polite"><div class="empty">Loading the Market…</div></div>
+  <nav class="pager" id="pager" aria-label="Pages"></nav>
+
+  <section class="section card reveal" style="margin:40px 0 0;padding:28px">
+    <div class="section-head" style="margin:0">
+      <div><h2 style="margin:0 0 6px">Made something?</h2><p>Publish a plugin, theme, wallpaper pack, cursor, look or app with an issue form. Once approved it gets its own page here.</p></div>
+      <a class="btn primary" href="{{market_repo}}/issues/new/choose" rel="noopener">{{icon:github}} Publish it</a>
+    </div>
+  </section>
+</div>
