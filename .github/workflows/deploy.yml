@@ -1,6 +1,6 @@
 # Build the site and upload it to the host (easyhost) over FTPS.
 #
-# Runs on every push to main, once a day (fresh GitHub stars), by hand, and when the
+# Runs on every push to main, once a day (the docs follow the repositories), by hand, and when the
 # Market approves something (aequalyn-market sends a "market-updated" repository_dispatch).
 #
 # Repository settings (Settings, Secrets and variables, Actions):
@@ -48,7 +48,6 @@ jobs:
       - name: Build
         if: env.SITE_MODE != 'coming-soon'
         env:
-          GITHUB_TOKEN: ${{ github.token }}
           SITE_URL: ${{ vars.SITE_URL }}
         run: python3 tools/build.py --themes .themes --out public
       - name: Coming soon only

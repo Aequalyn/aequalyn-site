@@ -12,7 +12,7 @@ aequalyn-market  ── an item is approved ──▶  db/market.json   (the cat
        │                                          │
        └─ repository_dispatch "market-updated" ──▶ aequalyn-site Actions: tools/build.py
                                                       │  + aequalyn-themes (built-in themes, wallpapers)
-                                                      │  + GitHub stars of every item's repository
+                                                      │  + the docs of every repository
                                                       ▼
                                                    public/  ──▶  the web host
 ```
@@ -28,7 +28,7 @@ the contact form. No database.
   pickers: **carousel** (the theme picker), **filmstrip** (the wallpaper picker) and
   **spotlight** (the layout picker's large preview beside its list).
 - Filters for the kind, built in or community, night or day, and a search; sorting by
-  featured, best rated, newest, GitHub stars, hearts, copies, views or name. The address keeps
+  featured, best rated, newest, hearts, copies, views or name. The address keeps
   the filters, so a filtered page can be shared.
 - Ratings: one to five stars, one rating per visitor that can be changed or taken back, shown
   as an average with the count and how many gave each number of stars. "Best rated" uses a
@@ -42,7 +42,7 @@ python3 tools/build.py --themes ../aequalyn-themes        # writes public/
 cd public && php -S 127.0.0.1:8080                        # a local preview, counters included
 ```
 
-`--market` takes another catalog (a path or a URL), `--no-stars` skips GitHub, `--sources`
+`--market` takes another catalog (a path or a URL), `--sources`
 reads the documentation from a folder of Aequalyn checkouts instead of GitHub, `SITE_URL`
 sets the address used in links and the sitemap, and `THEMES_CDN` replaces jsDelivr for the
 theme pictures. Only Python's standard library is needed.

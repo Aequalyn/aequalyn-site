@@ -31,16 +31,5 @@
         "core desktop"
       ]
     }
-  ],
-  "team_repos": [
-    "aequalyn",
-    "aequalyn-shell",
-    "aequalyn-installer",
-    "aequalyn-iso",
-    "aequalyn-themes",
-    "aequalyn-lockscreens",
-    "aequalyn-market",
-    "aequalyn-pkgs",
-    "aequalyn-site"
   ]
 }

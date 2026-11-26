@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Build the Aequalyn site into public/, ready to upload as it is.
 
-    tools/build.py --themes ../aequalyn-themes [--market db/market.json|URL] [--out public] [--no-stars]
+    tools/build.py --themes ../aequalyn-themes [--market db/market.json|URL] [--out public] [--sources DIR]
 
-Reads the Market's catalog (the approved items) and the themes repository (every built-in
-theme and wallpaper), fetches each repository's GitHub stars (GITHUB_TOKEN raises the rate
-limit), and writes every page, one page per item, the data the scripts read, a sitemap and
-the PHP counters API. Only the standard library: it runs the same in Actions and at home.
+Reads the Market's catalog (the approved items), the themes repository (every built-in
+theme and wallpaper) and the documentation of every repository, and writes every page, one
+page per item, the data the scripts read, a sitemap and the PHP counters API. It asks no
+GitHub API, so it has no rate limit to run into. Only the standard library: it runs the same
+in Actions and at home.
 """
 import argparse
 import html
@@ -59,20 +60,13 @@ ICONS = {
     "send": _S + '<path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z"/></svg>',
     "external": _S + '<path d="M14 4h6v6M20 4 10 14M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
 }
-SPRITE_ICONS = ["star", "github", "heart", "copy", "eye", "left", "right"]
+SPRITE_ICONS = ["star", "heart", "copy", "eye", "left", "right"]
 
 
-def fetch_json(url, token=None):
-    req = urllib.request.Request(url, headers={"User-Agent": "aequalyn-site-build", "Accept": "application/vnd.github+json"})
-    if token:
-        req.add_header("Authorization", f"Bearer {token}")
+def fetch_json(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "aequalyn-site-build"})
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.load(r)
-
-
-def gh_repo(url):
-    m = re.match(r"^https://github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+?)(?:\.git)?(?:/.*)?$", url or "")
-    return f"{m.group(1)}/{m.group(2)}" if m else None
 
 
 def load_themes(themes_dir, themes_repo):
@@ -91,7 +85,7 @@ def load_themes(themes_dir, themes_repo):
                 "key": f"theme:{tid}", "kind": "theme", "id": tid, "name": t.get("name", tid),
                 "about": t.get("about") or "Colours drawn from its own backgrounds.", "by": t.get("author", "Aequalyn"),
                 "license": "", "source": "built-in", "variant": "dark",
-                "repo": f"https://github.com/{themes_repo}/tree/main/themes/{tid}", "gh": themes_repo,
+                "repo": f"https://github.com/{themes_repo}/tree/main/themes/{tid}",
                 "preview": f"{cdn}/themes/{tid}/preview.jpg" if (tj.parent / "preview.jpg").is_file() else "",
                 "media": "image", "colors": [], "approved": "",
                 "install": f"aequalyn-themes install {CLONE}/themes/{tid} && aequalyn-themes set {tid}",
@@ -105,7 +99,7 @@ def load_themes(themes_dir, themes_repo):
         items.append({
             "key": f"theme:{tid}", "kind": "theme", "id": tid, "name": t.get("name", tid), "about": t.get("about", ""),
             "by": t.get("author", "Aequalyn"), "license": "", "source": "built-in", "variant": themes[tid]["variant"],
-            "repo": f"https://github.com/{themes_repo}/tree/main/themes/{tid}", "gh": themes_repo,
+            "repo": f"https://github.com/{themes_repo}/tree/main/themes/{tid}",
             "preview": f"{cdn}/themes/{tid}/preview.jpg" if (tj.parent / "preview.jpg").is_file() else "",
             "media": "image", "colors": [pal.get(k) for k in ("bgBase", "bgSurface", "accentPrimary", "accentCyan", "accentGreen", "accentRed") if pal.get(k)],
             "install": f"aequalyn-themes install {CLONE}/themes/{tid} && aequalyn-themes set {tid}",
@@ -125,7 +119,7 @@ def load_themes(themes_dir, themes_repo):
             "name": ("Live: " if live else "") + w.stem.replace("-", " ").title(),
             "about": "A live wallpaper that plays behind your windows." if live else "A wallpaper that comes with Aequalyn.",
             "by": "Aequalyn", "license": "", "source": "built-in",
-            "repo": f"https://github.com/{themes_repo}/blob/main/wallpapers/{w.name}", "gh": themes_repo,
+            "repo": f"https://github.com/{themes_repo}/blob/main/wallpapers/{w.name}",
             "preview": f"{cdn}/wallpapers/{w.name}", "media": "video" if live else "image",
             "install": f"aequalyn-wallpaper set {CLONE}/wallpapers/{w.name}", "approved": "",
         })
@@ -150,26 +144,13 @@ def load_market(src):
         items.append({
             "key": f"{shown}:{iid}", "kind": shown, "id": iid, "name": it.get("name", iid), "about": it.get("about", ""),
             "by": it.get("by", ""), "license": it.get("license", ""), "source": "community",
-            "repo": it.get("repo", ""), "gh": gh_repo(it.get("repo", "")), "commit": it.get("commit", ""),
+            "repo": it.get("repo", ""), "commit": it.get("commit", ""),
             "issue": it.get("issue"), "approved": it.get("approved", ""), "approvedBy": it.get("approvedBy", ""),
             "preview": prev, "media": "icon" if (shown in ("app", "cursor") or re.search(r"/icon\.[a-z]+$", prev)) else
                        ("video" if prev.endswith(".mp4") else "image"),
             "install": f"aequalyn-store install-market {kind}:{iid}",
         })
     return data, items
-
-
-def add_stars(items, token, offline):
-    stars = {}
-    for repo in sorted({i["gh"] for i in items if i.get("gh")}):
-        if offline:
-            break
-        try:
-            stars[repo] = int(fetch_json(f"https://api.github.com/repos/{repo}", token).get("stargazers_count", 0))
-        except Exception as ex:  # a missing or private repo keeps no stars, the build goes on
-            print(f"  stars: {repo}: {ex}", file=sys.stderr)
-    for i in items:
-        i["stars"] = stars.get(i.get("gh"), 0)
 
 
 # ------------------------------------------------------------------ rendering
@@ -235,7 +216,6 @@ def item_body(it, related, cfg):
       <div class="card" style="display:grid;gap:14px">
         <span><span class="chip accent">{kind}</span> <span class="chip">{"Built in" if it["source"] == "built-in" else "Community"}</span></span>
         <div class="counters">
-          <div><b>{it.get("stars", 0)}</b><span>GitHub ★</span></div>
           <div><b data-count="h">–</b><span>hearts</span></div>
           <div><b data-count="c">–</b><span>copies</span></div>
           <div><b data-count="v">–</b><span>views</span></div>
@@ -256,50 +236,20 @@ def item_body(it, related, cfg):
 </div>"""
 
 
-def load_team(cfg, token, offline):
-    """the people in site.json, with their GitHub profile and commits across the repositories"""
-    org = cfg["org"].rstrip("/").rsplit("/", 1)[-1]
-    commits = {}
-    for repo in ([] if offline else cfg.get("team_repos", [])):
-        try:
-            for c in fetch_json(f"https://api.github.com/repos/{org}/{repo}/contributors?per_page=100", token):
-                commits.setdefault(c["login"].lower(), {})[repo] = c["contributions"]
-        except Exception as ex:
-            print(f"  team: {repo}: {ex}", file=sys.stderr)
-    team = []
-    for m in cfg.get("team", []):
-        login = m["login"]
-        prof = {}
-        if not offline:
-            try:
-                prof = fetch_json(f"https://api.github.com/users/{login}", token)
-            except Exception as ex:
-                print(f"  team: {login}: {ex}", file=sys.stderr)
-        team.append({**m, "name": prof.get("name") or login, "bio": prof.get("bio") or "",
-                     "avatar": prof.get("avatar_url") or f"https://github.com/{login}.png?size=240",
-                     "url": prof.get("html_url") or f"https://github.com/{login}", "commits": commits.get(login.lower(), {})})
-    return team
-
-
-def team_html(team, org):
+def team_html(team):
+    """the people in site.json: picture, name, role, areas and their GitHub profile"""
     out = []
     for n, m in enumerate(team):
-        total = sum(m["commits"].values())
-        repos = sorted(m["commits"].items(), key=lambda kv: -kv[1])
-        top = repos[0][1] if repos else 1
-        bars = "".join(f'<div><a href="{e(org)}/{e(r)}" rel="noopener">{e(r)}</a><i><b style="width:{100 * k / top:.0f}%"></b></i><small>{k}</small></div>' for r, k in repos)
+        login = m["login"]
+        name = m.get("name") or login
         areas = "".join(f'<span class="chip accent">{e(a)}</span>' for a in m.get("areas", []))
-        bio = f'<p>{e(m["bio"])}</p>' if m["bio"] else ""
-        work = f'<div class="rating-bars person-repos"><span class="muted" style="font-size:13px">{total} commits across Aequalyn</span>{bars}</div>' if total else ""
         out.append(f"""<article class="card person reveal" style="--d:{n * .08}s">
-      <img src="{e(m["avatar"])}" alt="{e(m["name"])}" width="120" height="120" loading="lazy">
+      <img src="https://github.com/{e(login)}.png?size=240" alt="{e(name)}" width="120" height="120" loading="lazy">
       <div>
-        <h2>{e(m["name"])}</h2>
-        <p class="muted" style="margin:0 0 8px">@{e(m["login"])} · {e(m["role"])}</p>
-        {bio}
+        <h2>{e(name)}</h2>
+        <p class="muted" style="margin:0 0 10px">@{e(login)} · {e(m.get("role", ""))}</p>
         <p style="display:flex;gap:6px;flex-wrap:wrap">{areas}</p>
-        {work}
-        <p style="margin:14px 0 0"><a class="btn" href="{e(m["url"])}" rel="noopener">{ICONS["github"]} GitHub profile</a></p>
+        <p style="margin:14px 0 0"><a class="btn" href="https://github.com/{e(login)}" rel="noopener">{ICONS["github"]} GitHub profile</a></p>
       </div>
     </article>""")
     return "".join(out)
@@ -451,7 +401,6 @@ def main():
     ap.add_argument("--themes", required=True, help="a checkout of aequalyn-themes")
     ap.add_argument("--market", default=MARKET_URL, help="db/market.json of aequalyn-market, a path or a URL")
     ap.add_argument("--out", default=str(ROOT / "public"))
-    ap.add_argument("--no-stars", action="store_true", help="do not ask GitHub for stars (offline)")
     ap.add_argument("--sources", help="a folder with checkouts of the Aequalyn repositories, read for the docs instead of GitHub")
     a = ap.parse_args()
 
@@ -469,8 +418,6 @@ def main():
     themes, builtin = load_themes(Path(a.themes), cfg["themes_repo"])
     market, community = load_market(a.market)
     items = community + builtin
-    add_stars(items, os.environ.get("GITHUB_TOKEN"), a.no_stars)
-    team = load_team(cfg, os.environ.get("GITHUB_TOKEN"), a.no_stars)
     org = cfg["org"].rstrip("/").rsplit("/", 1)[-1]
     man, dpages = docs.load(SRC / "docs", org, a.sources)
     for i in items:
@@ -491,7 +438,7 @@ def main():
         "operator": e(cfg["operator"]), "updated_legal": e(cfg["updated_legal"]), "version": version,
         "contact_email_line": f' Or email <a href="mailto:{e(email)}">{e(email)}</a>.' if email else "",
         "quick_themes": quick_themes(themes), "themes_gallery": themes_gallery(themes, items), "sprite": sprite,
-        "team": team_html(team, cfg["org"].rstrip("/"))}}
+        "team": team_html(cfg.get("team", []))}}
 
     # pages
     for src in sorted((SRC / "pages").rglob("*.html")):
@@ -523,7 +470,7 @@ def main():
           "h": [x[2] for x in p["toc"]], "x": p["text"][:4000]} for p in dpages], separators=(",", ":")))
 
     # data for the scripts
-    public = [{k: v for k, v in i.items() if k not in ("gh", "palette")} for i in items]
+    public = [{k: v for k, v in i.items() if k != "palette"} for i in items]
     write(out, "data/catalog.json", json.dumps({"updated": market.get("updated", ""), "version": market.get("version"), "items": public}, separators=(",", ":")))
     write(out, "data/themes.json", json.dumps(themes, separators=(",", ":")))
     # assets, the API and the server's settings

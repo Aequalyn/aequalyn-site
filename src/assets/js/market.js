@@ -11,7 +11,6 @@
     featured: (a, b) => score(b) - score(a),
     newest: (a, b) => (b.approved || "").localeCompare(a.approved || "") || a.name.localeCompare(b.name),
     rating: (a, b) => rated(b) - rated(a) || (b.n || 0) - (a.n || 0),
-    stars: (a, b) => (b.stars || 0) - (a.stars || 0),
     hearts: (a, b) => (b.h || 0) - (a.h || 0),
     copies: (a, b) => (b.c || 0) - (a.c || 0),
     views: (a, b) => (b.v || 0) - (a.v || 0),
@@ -22,7 +21,7 @@
   let meanRating = 3.5;
   const rated = i => ((i.r || 0) * (i.n || 0) + meanRating * 3) / ((i.n || 0) + 3);
   // Featured: what people keep, then what they look at; community work first among equals.
-  const score = i => (i.n ? (rated(i) - 3) * 8 : 0) + (i.h || 0) * 5 + (i.c || 0) * 3 + (i.stars || 0) * 2 + (i.v || 0) * .2 + (i.source === "community" ? 1 : 0);
+  const score = i => (i.n ? (rated(i) - 3) * 8 : 0) + (i.h || 0) * 5 + (i.c || 0) * 3 + (i.v || 0) * .2 + (i.source === "community" ? 1 : 0);
   const icon = n => (document.getElementById("i-" + n)?.innerHTML || "");
 
   let catalog = [], st = {};
@@ -44,7 +43,6 @@
   };
   const metaLine = it => `<div class="meta">
       <span class="rated" title="${it.n ? `Rated ${(+it.r).toFixed(1)} of 5 by ${it.n}` : "Not rated yet"}">${icon("star")}${it.n ? `${(+it.r).toFixed(1)} <small>(${it.n})</small>` : "–"}</span>
-      <span title="GitHub stars">${icon("github")}${num(it.stars)}</span>
       <span title="Hearts">${icon("heart")}${num(it.h)}</span>
       <span title="Copies of the install command">${icon("copy")}${num(it.c)}</span>
       <span title="Views">${icon("eye")}${num(it.v)}</span></div>`;
