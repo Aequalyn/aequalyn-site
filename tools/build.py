@@ -325,7 +325,7 @@ def themes_gallery(themes, items):
         chips = "".join(f'<i style="background:{e(c)}"></i>' for c in it["colors"])
         out.append(f'<div class="item" data-tilt style="--i:{n % 9}"><span class="glare"></span>'
                    f'<a href="/market/theme/{e(tid)}/" class="media" style="display:block"><img src="{e(it["preview"])}" alt="{e(t["name"])}, a preview" loading="lazy"><span class="palette">{chips}</span></a>'
-                   f'<div class="body"><h3><a href="/market/theme/{e(tid)}/" style="color:inherit">{e(t["family"])}</a></h3><p>{e(t["about"])}</p>'
+                   f'<div class="body"><h3><a href="/market/theme/{e(tid)}/" style="color:inherit">{e(t["name"])}</a></h3><p>{e(t["about"])}</p>'
                    f'<div style="display:flex;gap:8px;margin-top:8px">{btns}</div></div></div>')
     return "".join(out)
 
