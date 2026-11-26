@@ -1,0 +1,330 @@
+{
+  "about": "The documentation's outline. Each page is made of parts: a file here in src/docs/ (local:name.md), or a file of an Aequalyn repository, whole (repo:path) or one ## section of it (repo:path#Heading; #_intro is what comes before the first ##). The build fetches each repository file at its newest commit, so the site says what the code does.",
+  "sections": [
+    {
+      "title": "Getting started",
+      "icon": "download",
+      "pages": [
+        {
+          "slug": "introduction",
+          "title": "Introduction",
+          "parts": [
+            "local:introduction.md",
+            "aequalyn:README.md#_intro"
+          ]
+        },
+        {
+          "slug": "repositories",
+          "title": "The repositories",
+          "parts": [
+            "aequalyn:README.md#Repositories"
+          ]
+        },
+        {
+          "slug": "install",
+          "title": "Install from the ISO",
+          "parts": [
+            "aequalyn-installer:README.md#_intro",
+            "aequalyn-installer:README.md#The flow, screen by screen",
+            "aequalyn-installer:README.md#The end of the wizard"
+          ]
+        },
+        {
+          "slug": "live-session",
+          "title": "The live session",
+          "parts": [
+            "aequalyn-iso:README.md#Live session defaults"
+          ]
+        },
+        {
+          "slug": "existing-system",
+          "title": "On an existing Arch system",
+          "parts": [
+            "aequalyn:README.md#Install onto an existing Arch + Hyprland system"
+          ]
+        },
+        {
+          "slug": "updating",
+          "title": "Updating",
+          "parts": [
+            "aequalyn:README.md#Updating and migrations"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The desktop",
+      "icon": "layout",
+      "pages": [
+        {
+          "slug": "keybinds",
+          "title": "Keybinds",
+          "parts": [
+            "aequalyn:README.md#Keybinds"
+          ]
+        },
+        {
+          "slug": "control-center",
+          "title": "Control center",
+          "parts": [
+            "aequalyn-shell:README.md#Control center"
+          ]
+        },
+        {
+          "slug": "bar-and-docks",
+          "title": "Bar and docks",
+          "parts": [
+            "aequalyn-shell:README.md#Bar and docks"
+          ]
+        },
+        {
+          "slug": "plugins",
+          "title": "Plugins",
+          "parts": [
+            "aequalyn-shell:plugins.md"
+          ]
+        },
+        {
+          "slug": "themes-and-wallpapers",
+          "title": "Themes and wallpapers",
+          "parts": [
+            "aequalyn-shell:README.md#Themes and wallpapers",
+            "aequalyn:README.md#Wallpapers and themes from the command line"
+          ]
+        },
+        {
+          "slug": "floating",
+          "title": "Floating workspaces",
+          "parts": [
+            "aequalyn:docs/floating.md"
+          ]
+        },
+        {
+          "slug": "lock-screen",
+          "title": "Lock screen",
+          "parts": [
+            "aequalyn-shell:README.md#Lock screen"
+          ]
+        },
+        {
+          "slug": "file-manager",
+          "title": "Aequalyn FM",
+          "parts": [
+            "aequalyn-shell:README.md#Aequalyn FM"
+          ]
+        },
+        {
+          "slug": "web-apps",
+          "title": "Web apps",
+          "parts": [
+            "aequalyn-shell:README.md#Web apps"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Store and Market",
+      "icon": "store",
+      "pages": [
+        {
+          "slug": "store",
+          "title": "The Store",
+          "parts": [
+            "aequalyn-shell:README.md#Store"
+          ]
+        },
+        {
+          "slug": "market",
+          "title": "The Market",
+          "parts": [
+            "aequalyn-market:README.md"
+          ]
+        },
+        {
+          "slug": "publish-plugin",
+          "title": "Publish a plugin",
+          "parts": [
+            "aequalyn-market:docs/guidelines/plugin.md"
+          ]
+        },
+        {
+          "slug": "publish-theme",
+          "title": "Publish a theme",
+          "parts": [
+            "aequalyn-market:docs/guidelines/theme.md"
+          ]
+        },
+        {
+          "slug": "publish-wallpaper",
+          "title": "Publish a wallpaper pack",
+          "parts": [
+            "aequalyn-market:docs/guidelines/wallpaper.md"
+          ]
+        },
+        {
+          "slug": "publish-cursor",
+          "title": "Publish a cursor",
+          "parts": [
+            "aequalyn-market:docs/guidelines/cursor.md"
+          ]
+        },
+        {
+          "slug": "publish-look",
+          "title": "Publish a look",
+          "parts": [
+            "aequalyn-market:docs/guidelines/look.md"
+          ]
+        },
+        {
+          "slug": "publish-app",
+          "title": "Publish an app",
+          "parts": [
+            "aequalyn-market:docs/guidelines/app.md"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Themes and login",
+      "icon": "palette",
+      "pages": [
+        {
+          "slug": "built-in-themes",
+          "title": "Built-in themes",
+          "parts": [
+            "aequalyn-themes:README.md#_intro",
+            "aequalyn-themes:README.md#Drawn here",
+            "aequalyn-themes:README.md#Gradients"
+          ]
+        },
+        {
+          "slug": "theme-format",
+          "title": "The theme format",
+          "parts": [
+            "aequalyn-themes:THEMES.md"
+          ]
+        },
+        {
+          "slug": "login-screens",
+          "title": "Login screens",
+          "parts": [
+            "aequalyn-lockscreens:README.md#_intro",
+            "aequalyn-lockscreens:README.md#Themes",
+            "aequalyn-lockscreens:README.md#Installation"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "How it works",
+      "icon": "bar",
+      "pages": [
+        {
+          "slug": "architecture",
+          "title": "Architecture",
+          "parts": [
+            "aequalyn:docs/architecture.md"
+          ]
+        },
+        {
+          "slug": "session-lock",
+          "title": "The session lock",
+          "parts": [
+            "aequalyn:docs/lock.md"
+          ]
+        },
+        {
+          "slug": "watchdog",
+          "title": "Watchdog and plugin sandbox",
+          "parts": [
+            "aequalyn-shell:README.md#Watchdog and plugin sandbox"
+          ]
+        },
+        {
+          "slug": "plugin-internals",
+          "title": "Plugins inside",
+          "parts": [
+            "aequalyn:PLUGINS.md"
+          ]
+        },
+        {
+          "slug": "shell-layout",
+          "title": "The shell's layout",
+          "parts": [
+            "aequalyn-shell:README.md#Layout"
+          ]
+        },
+        {
+          "slug": "packages",
+          "title": "Packages and profiles",
+          "parts": [
+            "aequalyn-pkgs:README.md#_intro"
+          ]
+        },
+        {
+          "slug": "installer-contract",
+          "title": "The installer contract",
+          "parts": [
+            "aequalyn:README.md#Installer contract"
+          ]
+        },
+        {
+          "slug": "ai-tools",
+          "title": "AI and development tools",
+          "parts": [
+            "aequalyn:README.md#AI and development tools"
+          ]
+        },
+        {
+          "slug": "security",
+          "title": "Security model",
+          "parts": [
+            "aequalyn:Security.md"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Build and contribute",
+      "icon": "install",
+      "pages": [
+        {
+          "slug": "build-iso",
+          "title": "Build the ISO",
+          "parts": [
+            "aequalyn:README.md#Build the ISO",
+            "aequalyn-iso:README.md#_intro"
+          ]
+        },
+        {
+          "slug": "run-the-shell",
+          "title": "Run the shell from a checkout",
+          "parts": [
+            "aequalyn-shell:README.md#Run from a checkout",
+            "aequalyn-shell:README.md#Tests"
+          ]
+        },
+        {
+          "slug": "contributing",
+          "title": "Contributing",
+          "parts": [
+            "local:contributing.md"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Help",
+      "icon": "bug",
+      "pages": [
+        {
+          "slug": "help",
+          "title": "Getting help",
+          "parts": [
+            "local:help.md"
+          ]
+        }
+      ]
+    }
+  ]
+}

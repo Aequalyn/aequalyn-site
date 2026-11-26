@@ -19,6 +19,9 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import docs  # noqa: E402  (tools/docs.py)
+
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 MARKET_URL = "https://raw.githubusercontent.com/Aequalyn/aequalyn-market/main/db/market.json"
@@ -382,12 +385,74 @@ def write(out, rel, text):
     p.write_text(text)
 
 
+def docs_sidebar(man, pages, cur):
+    by = {p["slug"]: p for p in pages}
+    groups = []
+    for sec in man["sections"]:
+        links = "".join(f'<li><a href="/docs/{s["slug"]}/"{" aria-current=page" if s["slug"] == cur else ""}>{e(s["title"])}</a></li>'
+                        for s in sec["pages"] if s["slug"] in by)
+        groups.append(f'<li class="group"><span>{ICONS.get(sec.get("icon"), "")}{e(sec["title"])}</span><ul>{links}</ul></li>')
+    return f"""<aside class="docs-side" id="docs-side">
+      <div class="docs-search" role="search">
+        <input type="search" id="docs-q" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off">
+        <kbd>/</kbd>
+        <ol class="docs-hits" id="docs-hits" hidden></ol>
+      </div>
+      <nav aria-label="Documentation"><ul class="docs-nav"><li><a href="/docs/"{" aria-current=page" if cur == "" else ""}>Overview</a></li>{"".join(groups)}</ul></nav>
+    </aside>"""
+
+
+def docs_page(pg, man, pages, n):
+    prev = pages[n - 1] if n > 0 else None
+    nxt = pages[n + 1] if n + 1 < len(pages) else None
+    toc = "".join(f'<li class="l{lvl}"><a href="#{hid}">{e(txt)}</a></li>' for lvl, hid, txt in pg["toc"])
+    srcs = " · ".join(f'<a href="{e(s["url"])}" rel="noopener">{e(s["repo"])}/{e(s["path"])}</a>' for s in pg["sources"])
+    edit = pg["sources"][0]["url"].replace("/blob/", "/edit/") if pg["sources"] else ""
+    pn = (f'<a class="card" href="/docs/{prev["slug"]}/"><small>Previous</small>{e(prev["title"])}</a>' if prev else "<span></span>") + \
+         (f'<a class="card next" href="/docs/{nxt["slug"]}/"><small>Next</small>{e(nxt["title"])}</a>' if nxt else "")
+    body = pg["html"].replace("{", "&#123;").replace("}", "&#125;")
+    return f"""<div class="wrap docs">
+  <button class="btn docs-menu" type="button" aria-expanded="false" aria-controls="docs-side">{ICONS["menu"]} {e(pg["section"])}</button>
+  {docs_sidebar(man, pages, pg["slug"])}
+  <article class="docs-main">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/docs/">Docs</a> / {e(pg["section"])}</nav>
+    <h1>{e(pg["title"])}</h1>
+    <div class="docs-body">{body}</div>
+    <footer class="docs-foot">
+      {f'<p class="muted">From {srcs}. Something wrong? <a href="{e(edit)}" rel="noopener">Edit it on GitHub</a>.</p>' if srcs else ""}
+      <div class="docs-pn">{pn}</div>
+    </footer>
+  </article>
+  <aside class="docs-toc">{f'<span>On this page</span><ol>{toc}</ol>' if toc else ""}</aside>
+</div>"""
+
+
+def docs_index(man, pages):
+    by = {p["slug"]: p for p in pages}
+    cards = []
+    for n, sec in enumerate(man["sections"]):
+        links = "".join(f'<li><a href="/docs/{s["slug"]}/">{e(s["title"])}</a></li>' for s in sec["pages"] if s["slug"] in by)
+        cards.append(f'<div class="card feature reveal" style="--d:{(n % 3) * .08}s"><div class="ico">{ICONS.get(sec.get("icon"), "")}</div>'
+                     f'<h3>{e(sec["title"])}</h3><ul class="docs-list">{links}</ul></div>')
+    return f"""<div class="wrap docs">
+  <button class="btn docs-menu" type="button" aria-expanded="false" aria-controls="docs-side">{ICONS["menu"]} Sections</button>
+  {docs_sidebar(man, pages, "")}
+  <article class="docs-main">
+    <span class="eyebrow">Documentation</span>
+    <h1>Everything about Aequalyn</h1>
+    <p style="font-size:1.08rem">How to install it, use it, make it yours, publish to the Market and build it, in {len(pages)} pages made from the repositories' own documentation. Press <kbd>/</kbd> to search.</p>
+    <div class="grid-3 docs-cards">{"".join(cards)}</div>
+  </article>
+</div>"""
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--themes", required=True, help="a checkout of aequalyn-themes")
     ap.add_argument("--market", default=MARKET_URL, help="db/market.json of aequalyn-market, a path or a URL")
     ap.add_argument("--out", default=str(ROOT / "public"))
     ap.add_argument("--no-stars", action="store_true", help="do not ask GitHub for stars (offline)")
+    ap.add_argument("--sources", help="a folder with checkouts of the Aequalyn repositories, read for the docs instead of GitHub")
     a = ap.parse_args()
 
     cfg = json.loads((SRC / "site.json").read_text())
@@ -406,6 +471,8 @@ def main():
     items = community + builtin
     add_stars(items, os.environ.get("GITHUB_TOKEN"), a.no_stars)
     team = load_team(cfg, os.environ.get("GITHUB_TOKEN"), a.no_stars)
+    org = cfg["org"].rstrip("/").rsplit("/", 1)[-1]
+    man, dpages = docs.load(SRC / "docs", org, a.sources)
     for i in items:
         i["url"] = f"/market/{i['kind']}/{i['id']}/"
     seen = set()
@@ -443,6 +510,18 @@ def main():
                 "scripts": ["item"], "image": it.get("preview") if it.get("media") == "image" else None}
         write(out, f"market/{it['kind']}/{it['id']}/index.html", page(item_body(it, related, cfg), meta, ctx, it["url"]))
 
+    # the documentation
+    dmeta = {"scripts": ["docs"]}
+    write(out, "docs/index.html", page(docs_index(man, dpages), {**dmeta, "title": "Docs · Aequalyn",
+          "description": "How to install, use, customise, publish to and build Aequalyn."}, ctx, "/docs/"))
+    for n, pg in enumerate(dpages):
+        desc = (pg["text"][:155].rsplit(" ", 1)[0] + "…") if len(pg["text"]) > 155 else pg["text"]
+        html_out = page(docs_page(pg, man, dpages, n), {**dmeta, "title": f'{pg["title"]} · Docs · Aequalyn', "description": desc},
+                        ctx, f"/docs/{pg['slug']}/")
+        write(out, f"docs/{pg['slug']}/index.html", html_out.replace("\x01copy\x01", ICONS["copy"]))
+    write(out, "data/docs-index.json", json.dumps([{"s": p["slug"], "t": p["title"], "g": p["section"],
+          "h": [x[2] for x in p["toc"]], "x": p["text"][:4000]} for p in dpages], separators=(",", ":")))
+
     # data for the scripts
     public = [{k: v for k, v in i.items() if k not in ("gh", "palette")} for i in items]
     write(out, "data/catalog.json", json.dumps({"updated": market.get("updated", ""), "version": market.get("version"), "items": public}, separators=(",", ":")))
@@ -454,11 +533,12 @@ def main():
     mark = ICONS["mark"].replace('class="mark" ', 'xmlns="http://www.w3.org/2000/svg" ').replace("currentColor", "#4fc1b0")
     write(out, "assets/img/favicon.svg", mark)
     base = cfg["url"].rstrip("/")
-    urls = [p for p in ["/", "/market/", "/themes/", "/news/", "/team/", "/contact/", "/privacy/", "/terms/"]] + [i["url"] for i in items]
+    urls = (["/", "/market/", "/themes/", "/docs/", "/news/", "/team/", "/contact/", "/privacy/", "/terms/"]
+            + [f"/docs/{p['slug']}/" for p in dpages] + [i["url"] for i in items])
     write(out, "sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
           + "".join(f"  <url><loc>{e(base + u)}</loc></url>\n" for u in urls) + "</urlset>\n")
     write(out, "robots.txt", f"User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: {base}/sitemap.xml\n")
-    print(f"built {len(items)} items ({counts['community']} community), {len(themes)} themes into {out}")
+    print(f"built {len(items)} items ({counts['community']} community), {len(themes)} themes, {len(dpages)} docs pages into {out}")
 
 
 if __name__ == "__main__":

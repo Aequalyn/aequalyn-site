@@ -42,6 +42,7 @@ python3 tools/build.py --themes ../aequalyn-themes        # writes public/
 cd public && php -S 127.0.0.1:8080                        # a local preview, counters included
 ```
 
-`--market` takes another catalog (a path or a URL), `--no-stars` skips GitHub, `SITE_URL`
+`--market` takes another catalog (a path or a URL), `--no-stars` skips GitHub, `--sources`
+reads the documentation from a folder of Aequalyn checkouts instead of GitHub, `SITE_URL`
 sets the address used in links and the sitemap, and `THEMES_CDN` replaces jsDelivr for the
 theme pictures. Only Python's standard library is needed.
