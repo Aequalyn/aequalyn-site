@@ -46,20 +46,45 @@ code, kbd, pre { font-family: var(--mono); font-size: .9em; }
 .skip { position: absolute; left: -999px; top: 8px; z-index: 100; background: var(--ae-bgSurface); padding: 8px 12px; border-radius: var(--radius); }
 .skip:focus { left: 8px; }
 
-/* the backdrop: a soft light that follows the pointer, over a slow drift of the theme's edge colours */
+/* the backdrop: the theme's wallpaper, blurred to its tones under a veil of its base colour;
+   over it a slow drift of three circles in the theme's own colours (--ae-c1..3; its edge
+   colours until they are set) and a soft light that follows the pointer */
 .backdrop { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-.backdrop::before, .backdrop::after {
+.backdrop .wall {
+  position: absolute; inset: -120px; z-index: -1;
+  background: var(--ae-wall, none) center / cover no-repeat; filter: blur(60px) saturate(1.15);
+}
+/* a bright centre in the picture (a logo, a sun) must not fade the headline over it */
+.backdrop .wall::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 45% 40% at 50% 42%, color-mix(in srgb, var(--ae-bgBase) 45%, transparent), transparent),
+    color-mix(in srgb, var(--ae-bgBase) 58%, transparent);
+}
+.backdrop::before, .backdrop::after, .backdrop .orb {
   content: ""; position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; filter: blur(90px); opacity: .16;
   animation: drift 26s ease-in-out infinite alternate;
 }
-.backdrop::before { background: var(--ae-edgeA); top: -25vmax; left: -15vmax; }
-.backdrop::after { background: var(--ae-edgeB); bottom: -30vmax; right: -20vmax; animation-delay: -13s; }
+.backdrop::before { background: var(--ae-c1, var(--ae-edgeA)); top: -25vmax; left: -15vmax; }
+.backdrop::after { background: var(--ae-c2, var(--ae-edgeB)); bottom: -30vmax; right: -20vmax; animation-delay: -13s; }
+.backdrop .orb {
+  background: var(--ae-c3, var(--ae-accentPrimary)); width: 46vmax; height: 46vmax;
+  top: 18vh; left: 52vw; animation-duration: 32s; animation-direction: alternate-reverse; animation-delay: -7s;
+}
 .backdrop .glow {
   position: absolute; width: 520px; height: 520px; border-radius: 50%; translate: -50% -50%;
   left: var(--mx, 50%); top: var(--my, 30%);
   background: radial-gradient(circle, color-mix(in srgb, var(--ae-accentPrimary) 14%, transparent), transparent 65%);
   transition: left .25s linear, top .25s linear;
 }
+/* day themes: their bases are all near white, so the veil is thinner, the colours stronger and
+   the glass takes a little of the accent, or every day theme would look the same cream */
+:root[data-variant="light"] { --glass: color-mix(in srgb, color-mix(in srgb, var(--ae-bgSurface) 88%, var(--ae-accentPrimary)) 74%, transparent); }
+:root[data-variant="light"] .backdrop .wall { filter: blur(60px) saturate(1.45); }
+:root[data-variant="light"] .backdrop .wall::after {
+  background: radial-gradient(ellipse 45% 40% at 50% 42%, color-mix(in srgb, var(--ae-bgBase) 40%, transparent), transparent),
+    color-mix(in srgb, var(--ae-bgBase) 30%, transparent);
+}
+:root[data-variant="light"] .backdrop::before, :root[data-variant="light"] .backdrop::after, :root[data-variant="light"] .backdrop .orb { opacity: .3; }
 @keyframes drift { to { transform: translate(12vmax, 8vmax) scale(1.15); } }
 
 /* ------------------------------------------------------------------ nav bar */

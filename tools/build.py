@@ -69,6 +69,17 @@ def fetch_json(url):
         return json.load(r)
 
 
+def circles(t, pal):
+    """the backdrop's three circles in the theme's own colours: one each when it has three,
+    repeated when it has fewer, and a gradient through the rest when it has more"""
+    cols = list(dict.fromkeys(c for c in (pal.get("borderColors") or t.get("colors") or []) if isinstance(c, str) and c))
+    cols = cols or [c for c in (pal.get("accentPrimary"), pal.get("accentCyan")) if c]
+    if not cols:
+        return []
+    groups = [cols[i::3] or [cols[i % len(cols)]] for i in range(3)]
+    return [g[0] if len(g) == 1 else f"linear-gradient(135deg,{','.join(g)})" for g in groups]
+
+
 def load_themes(themes_dir, themes_repo):
     """every built-in theme's palette, and the catalog entries for themes and wallpapers"""
     # jsDelivr serves the repository fast and cached; THEMES_CDN overrides it (a local preview)
@@ -91,11 +102,13 @@ def load_themes(themes_dir, themes_repo):
                 "install": f"aequalyn-themes install {CLONE}/themes/{tid} && aequalyn-themes set {tid}",
             })
             continue
+        rings = circles(t, pal)  # before borderColors leaves the palette
         border = pal.pop("borderColors", None) or t.get("colors", [])[1:3]
         themes[tid] = {"name": t.get("name", tid), "family": t.get("family", t.get("name", tid)),
                        "variant": "light" if t.get("variant") == "light" else "dark",
                        "about": t.get("about", ""), "palette": pal, "border": border,
-                       "preview": f"{cdn}/themes/{tid}/preview.jpg" if (tj.parent / "preview.jpg").is_file() else ""}
+                       "preview": f"{cdn}/themes/{tid}/preview.jpg" if (tj.parent / "preview.jpg").is_file() else "",
+                       "circles": rings}
         items.append({
             "key": f"theme:{tid}", "kind": "theme", "id": tid, "name": t.get("name", tid), "about": t.get("about", ""),
             "by": t.get("author", "Aequalyn"), "license": "", "source": "built-in", "variant": themes[tid]["variant"],
@@ -302,6 +315,11 @@ def quick_themes(themes):
                    f'<span class="name">{e(themes[t]["name"])}</span></button>' for t in pick)
 
 
+def wall_style(t):
+    """the blurred wallpaper for a visitor who has not chosen a theme yet (the default's preview)"""
+    return e(f'--ae-wall:url("{t["preview"]}")') if t and t.get("preview") else ""
+
+
 def page(body, meta, ctx, path):
     head = (SRC / "partials/head.html").read_text()
     nav = (SRC / "partials/nav.html").read_text()
@@ -438,7 +456,7 @@ def main():
         "operator": e(cfg["operator"]), "updated_legal": e(cfg["updated_legal"]), "version": version,
         "contact_email_line": f' Or email <a href="mailto:{e(email)}">{e(email)}</a>.' if email else "",
         "quick_themes": quick_themes(themes), "themes_gallery": themes_gallery(themes, items), "sprite": sprite,
-        "team": team_html(cfg.get("team", []))}}
+        "team": team_html(cfg.get("team", [])), "default_wall": wall_style(themes.get("aequalyn"))}}
 
     # pages
     for src in sorted((SRC / "pages").rglob("*.html")):

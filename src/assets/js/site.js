@@ -25,12 +25,15 @@
     root.style.setProperty("--ae-edgeB", edge[1] || edge[0]);
     root.dataset.variant = t.variant === "light" ? "light" : "dark";
     root.dataset.theme = t.id;
+    const c = t.circles || [];
+    for (let i = 0; i < 3; i++) c[i] ? root.style.setProperty(`--ae-c${i + 1}`, c[i]) : root.style.removeProperty(`--ae-c${i + 1}`);
+    t.preview ? root.style.setProperty("--ae-wall", `url(${JSON.stringify(t.preview)})`) : root.style.removeProperty("--ae-wall");
     const meta = $('meta[name="theme-color"]'); if (meta) meta.content = t.palette.bgBase;
   }
   function wear(id, from) {
     loadThemes().then(all => {
       const t = all[id]; if (!t) return;
-      store.set("ae-theme", { id, variant: t.variant, palette: t.palette, border: t.border });
+      store.set("ae-theme", { id, variant: t.variant, palette: t.palette, border: t.border, circles: t.circles, preview: t.preview });
       const go = () => { paint({ id, ...t }); syncPicker(); document.dispatchEvent(new CustomEvent("ae:theme", { detail: id })); };
       if (document.startViewTransition && !reduced) {
         if (from) { const r = from.getBoundingClientRect(); const s = document.documentElement.style;
@@ -165,6 +168,12 @@
     document.addEventListener("keydown", e => { if (e.key === "Escape") { picker?.classList.remove("open"); nav?.classList.remove("open"); } });
     $$("[data-flip]").forEach(b => b.addEventListener("click", () => flip(b)));
     syncPicker();
+    // a theme chosen before the circles and the blurred wallpaper: give it both once
+    const saved = store.get("ae-theme", null);
+    if (saved && saved.id && !("preview" in saved && saved.circles)) loadThemes().then(all => {
+      const t = all[saved.id]; if (!t) return;
+      store.set("ae-theme", { ...saved, circles: t.circles, preview: t.preview }); paint({ id: saved.id, ...t });
+    });
 
     document.addEventListener("pointerdown", e => {
       const b = e.target.closest(".btn"); if (!b || reduced) return;
