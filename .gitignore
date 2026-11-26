@@ -1,0 +1,8 @@
+# the build
+public/
+.themes/
+__pycache__/
+# live only on the host
+src/api/config.php
+src/api/data/*.json
+src/api/data/*.txt

@@ -1,0 +1,46 @@
+{
+  "name": "Aequalyn",
+  "url": "https://aequalyn.org",
+  "org": "https://github.com/Aequalyn",
+  "market_repo": "https://github.com/Aequalyn/aequalyn-market",
+  "themes_repo": "Aequalyn/aequalyn-themes",
+  "iso_releases": "https://github.com/Aequalyn/aequalyn-iso/releases",
+  "operator": "the Aequalyn project",
+  "contact_email": "",
+  "updated_legal": "2026-11-26",
+  "team": [
+    {
+      "login": "qempexe",
+      "role": "Maintainer",
+      "areas": [
+        "Quickshell shell",
+        "Store and Market",
+        "installer",
+        "themes",
+        "core desktop"
+      ]
+    },
+    {
+      "login": "nightdevil00",
+      "role": "Maintainer",
+      "areas": [
+        "ISO and live session",
+        "packages",
+        "lock and login screens",
+        "installer",
+        "core desktop"
+      ]
+    }
+  ],
+  "team_repos": [
+    "aequalyn",
+    "aequalyn-shell",
+    "aequalyn-installer",
+    "aequalyn-iso",
+    "aequalyn-themes",
+    "aequalyn-lockscreens",
+    "aequalyn-market",
+    "aequalyn-pkgs",
+    "aequalyn-site"
+  ]
+}
