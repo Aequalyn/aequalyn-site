@@ -34,6 +34,14 @@ the contact form. No database.
   as an average with the count and how many gave each number of stars. "Best rated" uses a
   Bayesian average, so one five-star vote does not outrank twenty fours.
 
+## News
+
+Each post is an entry in `src/data/news.json` (`date`, `title`, a one- or two-sentence
+`body`, and an optional `link`) and gets a page of its own at `/news/<slug>/`, the slug made
+from its title unless the entry gives a `slug`. A longer post goes in `src/news/<slug>.md`,
+in Markdown, shown on its page under the short text. The home page and `/news/` list the
+posts and link to their pages.
+
 ## Build it
 
 ```bash

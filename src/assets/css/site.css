@@ -444,6 +444,9 @@ select { appearance: none; padding-right: 32px; cursor: pointer;
 .news time { font-family: var(--mono); font-size: 12.5px; color: var(--ae-textMuted); padding-top: 4px; }
 .news h3 { font-size: 1.1rem; margin-bottom: 6px; }
 .news p { margin: 0; }
+.post time { display: block; font-family: var(--mono); font-size: 12.5px; color: var(--ae-textMuted); margin: -4px 0 18px; }
+.post .lead { font-size: 1.15rem; color: var(--ae-textPrimary); }
+.post .docs-pn { margin-top: 40px; }
 @media (max-width: 640px) { .news article { grid-template-columns: 1fr; gap: 4px; } }
 .form { display: grid; gap: 14px; max-width: 560px; }
 .form label { display: grid; gap: 6px; font-size: 14px; color: var(--ae-textSecondary); }

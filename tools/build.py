@@ -268,16 +268,56 @@ def team_html(team):
     return "".join(out)
 
 
+def news_posts(news):
+    """the news, newest first, each with its own page: /news/<slug>/ (its "slug", or one made
+    from its title) and its full text from src/news/<slug>.md when there is one"""
+    posts, seen = [], set()
+    for it in sorted(news.get("items", []), key=lambda x: x.get("date", ""), reverse=True):
+        slug = docs.slugify(it.get("slug") or it["title"])
+        if slug in seen:
+            slug = f'{slug}-{it.get("date", "")}'.rstrip("-")
+        seen.add(slug)
+        md = SRC / "news" / f"{slug}.md"
+        html_body = docs.render(md.read_text(), lambda href, image: href)[0] if md.is_file() else ""
+        posts.append({**it, "slug": slug, "url": f"/news/{slug}/", "html": html_body})
+    return posts
+
+
 def news_html(news, n=None):
-    items = sorted(news.get("items", []), key=lambda x: x.get("date", ""), reverse=True)
+    items = news_posts(news)
     if n:
         items = items[:n]
     out = []
     for it in items:
-        link = it.get("link", "")
-        title = f'<a href="{e(link)}">{e(it["title"])}</a>' if link else e(it["title"])
+        title = f'<a href="{e(it["url"])}">{e(it["title"])}</a>'
         out.append(f'<article class="card reveal"><time datetime="{e(it["date"])}">{e(it["date"])}</time><div><h3>{title}</h3><p>{e(it["body"])}</p></div></article>')
     return "".join(out) or '<p class="muted">No news yet.</p>'
+
+
+def news_page(posts, n):
+    it = posts[n]
+    newer = posts[n - 1] if n > 0 else None
+    older = posts[n + 1] if n + 1 < len(posts) else None
+    link = it.get("link", "")
+    more = ""
+    if link:
+        rel = ' rel="noopener"' if re.match(r"^https?:", link) else ""
+        label = "Read more on GitHub" if "github.com" in link else "Take a look"
+        more = f'<p><a class="btn" href="{e(link)}"{rel}>{label}</a></p>'
+    pn = (f'<a class="card" href="{older["url"]}"><small>Older</small>{e(older["title"])}</a>' if older else "<span></span>") + \
+         (f'<a class="card next" href="{newer["url"]}"><small>Newer</small>{e(newer["title"])}</a>' if newer else "")
+    body = it["html"].replace("{", "&#123;").replace("}", "&#125;")
+    lead = e(it["body"]).replace("{", "&#123;").replace("}", "&#125;")
+    title = e(it["title"]).replace("{", "&#123;").replace("}", "&#125;")
+    return f"""<article class="wrap prose post">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/news/">News</a></nav>
+  <h1>{title}</h1>
+  <time datetime="{e(it["date"])}">{e(it["date"])}</time>
+  <p class="lead">{lead}</p>
+  {f'<div class="docs-body">{body}</div>' if body else ""}
+  {more}
+  <footer class="docs-pn">{pn}</footer>
+</article>"""
 
 
 def themes_gallery(themes, items):
@@ -467,6 +507,11 @@ def main():
         rel = src.relative_to(SRC / "pages")
         path = "/" + str(rel).replace("index.html", "").replace("\\", "/")
         write(out, rel, page(raw[m.end():], json.loads(m.group(1)), ctx, path))
+    # one page per news post
+    posts = news_posts(news)
+    for n, it in enumerate(posts):
+        write(out, f"news/{it['slug']}/index.html",
+              page(news_page(posts, n), {"title": f'{it["title"]} · News · Aequalyn', "description": it["body"][:155]}, ctx, it["url"]))
     # one page per item
     for it in items:
         related = [r for r in items if r["kind"] == it["kind"] and r["key"] != it["key"] and r.get("preview")]
@@ -499,7 +544,7 @@ def main():
     write(out, "assets/img/favicon.svg", mark)
     base = cfg["url"].rstrip("/")
     urls = (["/", "/market/", "/themes/", "/docs/", "/news/", "/team/", "/contact/", "/privacy/", "/terms/"]
-            + [f"/docs/{p['slug']}/" for p in dpages] + [i["url"] for i in items])
+            + [f"/docs/{p['slug']}/" for p in dpages] + [p["url"] for p in posts] + [i["url"] for i in items])
     write(out, "sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
           + "".join(f"  <url><loc>{e(base + u)}</loc></url>\n" for u in urls) + "</urlset>\n")
     write(out, "robots.txt", f"User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: {base}/sitemap.xml\n")
