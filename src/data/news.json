@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "date": "2026-11-26",
+      "title": "The website is on its way",
+      "body": "The Market now has a home on the web: every plugin, theme, wallpaper, app, cursor and look, with a page of its own as soon as it is approved.",
+      "link": "/market/"
+    },
+    {
+      "date": "2026-11-25",
+      "title": "Thirty gradient themes, six metals and stones",
+      "body": "Thirty gradient themes and gold, silver, bronze, ruby, emerald and platinum, each with a day variant, are built in and ready in the Store.",
+      "link": "/themes/"
+    },
+    {
+      "date": "2026-11-24",
+      "title": "The Market opens",
+      "body": "Publish a plugin, theme, cursor, wallpaper pack, look or app with an issue form; the bot checks it and a reviewer approves it at the commit that was checked.",
+      "link": "https://github.com/Aequalyn/aequalyn-market#publish"
+    }
+  ]
+}

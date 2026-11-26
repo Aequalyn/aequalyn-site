@@ -1,0 +1,71 @@
+<!--meta {"title": "Aequalyn · an Arch Linux desktop coloured by your wallpaper", "description": "Aequalyn is an Arch Linux ISO and desktop built around a Quickshell shell for Hyprland, with themes, plugins, wallpapers and apps from its Market.", "scripts": ["market"]} -->
+<section class="hero">
+  <div class="wrap">
+    <svg class="mark-big" viewBox="100 130 320 200" fill="none" stroke="currentColor" stroke-width="29.7" aria-hidden="true"><g transform="translate(0 20.5)"><circle cx="188.8" cy="204.8" r="64"/><path d="M252.8 204.8v78.8"/><path d="M380.8 204.8A64 64 0 1 0 365.8 245.9" stroke-linecap="round"/><path d="M252.8 204.8h128"/></g></svg>
+    <span class="eyebrow reveal">Arch Linux · Hyprland · Quickshell</span>
+    <h1 class="reveal" style="--d:.08s">A desktop that <span>wears your wallpaper</span>.</h1>
+    <p class="lead reveal" style="--d:.16s">Aequalyn is an Arch Linux ISO and desktop: a shaped bar and up to sixteen docks, a control center, a Store and an Atelier of themes, layouts and wallpapers, coloured across every app by the picture behind them.</p>
+    <div class="ctas reveal" style="--d:.24s">
+      <a class="btn primary" href="{{iso_releases}}" rel="noopener">{{icon:download}} Download the ISO</a>
+      <a class="btn" href="/market/">{{icon:grid}} Browse the Market</a>
+      <a class="btn" href="{{org}}" rel="noopener">{{icon:github}} Source on GitHub</a>
+    </div>
+    <div class="terminal reveal" style="--d:.32s">
+      <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="c"># anything in the Market, from a terminal</span>
+<span class="p">$</span> aequalyn-store install-market plugin:dev-stats
+<span class="c"># or wear a built-in theme</span>
+<span class="p">$</span> aequalyn-themes set aequalyn-day</pre>
+    </div>
+    <div class="stats-row reveal" style="--d:.4s">
+      <div><b data-stat="all">{{count:all}}</b><span>in the Market</span></div>
+      <div><b>{{count:theme}}</b><span>themes, night and day</span></div>
+      <div><b data-stat="community">{{count:community}}</b><span>from the community</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:20px">
+  <div class="wrap">
+    <div class="grid-3">
+      <div class="card feature reveal"><div class="ico">{{icon:palette}}</div><h3>Colours from the wallpaper</h3><p>matugen reads the picture and recolours the shell, GTK, Qt, terminals and browsers. Or pin a folder theme and keep its palette.</p></div>
+      <div class="card feature reveal" style="--d:.08s"><div class="ico">{{icon:layout}}</div><h3>Thirty-seven window layouts</h3><p>Portrait, Centerpiece, Bento, Galleries, Diptychs and more, a floating desktop with snap zones, and a picker for all of them.</p></div>
+      <div class="card feature reveal" style="--d:.16s"><div class="ico">{{icon:store}}</div><h3>A Store you can trust</h3><p>Every Market item is checked by a bot and approved by a person at one pinned commit. Updates are reviewed the same way.</p></div>
+      <div class="card feature reveal"><div class="ico">{{icon:bar}}</div><h3>A bar shaped your way</h3><p>Twenty-six looks for the bar, sixteen docks, three regions of plugins you drag where you want them.</p></div>
+      <div class="card feature reveal" style="--d:.08s"><div class="ico">{{icon:lock}}</div><h3>Lock screens and login</h3><p>A Quickshell lock with face unlock, and SDDM themes to match, drawn in the colours you wear.</p></div>
+      <div class="card feature reveal" style="--d:.16s"><div class="ico">{{icon:install}}</div><h3>Install in minutes</h3><p>A guided installer with eight profiles, an offline repository on the ISO, and updates that migrate your settings instead of replacing them.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="eyebrow">The Market</span><h2>Most loved right now</h2></div>
+      <a class="btn" href="/market/">See all {{icon:right}}</a>
+    </div>
+    <div id="shelf"><div class="empty">Loading the Market…</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="eyebrow">Built in</span><h2>Try a theme on this page</h2><p>Every built-in theme dresses the whole site, and stays on as you move around. Use {{icon:sun}} for its day variant.</p></div>
+      <a class="btn" href="/themes/">All themes {{icon:right}}</a>
+    </div>
+    <div class="palette-big" id="quick-themes">{{quick_themes}}</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><div><span class="eyebrow">News</span><h2>Lately</h2></div><a class="btn" href="/news/">All news {{icon:right}}</a></div>
+    <div class="news">{{news:3}}</div>
+  </div>
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("#quick-themes [data-wear]").forEach(b => b.addEventListener("click", () => AE.wear(b.dataset.wear, b)));
+});
+</script>
