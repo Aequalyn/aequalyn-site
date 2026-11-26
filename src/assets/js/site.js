@@ -53,7 +53,6 @@
     });
   }
 
-  let pickerFilter = "all";
   function buildPicker() {
     const box = $("#picker"); if (!box || box.dataset.built) return;
     box.dataset.built = "1";
@@ -70,10 +69,7 @@
   function filterPicker() {
     const box = $("#picker"); if (!box) return;
     const q = ($("input", box).value || "").toLowerCase();
-    $$(".swatch", box).forEach(s => {
-      const okV = pickerFilter === "all" || s.dataset.variant === pickerFilter;
-      s.hidden = !(okV && s.textContent.toLowerCase().includes(q));
-    });
+    $$(".swatch", box).forEach(s => { s.hidden = !s.textContent.toLowerCase().includes(q); });
   }
   function syncPicker() {
     const cur = document.documentElement.dataset.theme;
@@ -160,10 +156,6 @@
     });
     picker?.addEventListener("click", e => { e.stopPropagation(); const s = e.target.closest(".swatch"); if (s) wear(s.dataset.id, s); });
     picker && $("input", picker).addEventListener("input", filterPicker);
-    $$("[data-variant-filter]").forEach(b => b.addEventListener("click", () => {
-      pickerFilter = b.dataset.variantFilter;
-      $$("[data-variant-filter]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); filterPicker();
-    }));
     document.addEventListener("click", () => { picker?.classList.remove("open"); pickBtn?.setAttribute("aria-expanded", "false"); });
     document.addEventListener("keydown", e => { if (e.key === "Escape") { picker?.classList.remove("open"); nav?.classList.remove("open"); } });
     $$("[data-flip]").forEach(b => b.addEventListener("click", () => flip(b)));
