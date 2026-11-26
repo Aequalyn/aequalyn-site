@@ -39,15 +39,14 @@
       } else go();
     });
   }
-  // Day and night: the same family in its other variant.
+  // Day and night: the same theme in its other variant (amber and amber-day). A theme
+  // with only one variant stays on, and says so.
   function flip(btn) {
     loadThemes().then(all => {
       const cur = document.documentElement.dataset.theme || "aequalyn";
       const t = all[cur]; if (!t) return wear("aequalyn", btn);
-      const want = t.variant === "light" ? "dark" : "light";
-      const pair = t.pair && all[t.pair] ? t.pair
-        : Object.keys(all).find(k => all[k].family === t.family && all[k].variant === want);
-      wear(pair || (want === "light" ? "aequalyn-day" : "aequalyn"), btn);
+      if (t.pair && all[t.pair]) return wear(t.pair, btn);
+      toast(`${t.name} has no ${t.variant === "light" ? "night" : "day"} variant`);
     });
   }
 
