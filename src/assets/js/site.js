@@ -58,8 +58,7 @@
       const list = $(".list", box);
       list.innerHTML = Object.entries(all).map(([id, t]) => `
         <button class="swatch" type="button" data-id="${esc(id)}" data-variant="${t.variant}" aria-pressed="false" title="${esc(t.about || t.name)}">
-          <span class="chips">${[t.palette.bgBase, t.palette.bgSurface, t.palette.accentPrimary, t.palette.accentCyan, t.palette.accentGreen]
-            .map(c => `<i style="background:${esc(c)}"></i>`).join("")}</span>
+          <span class="pic">${t.preview ? `<img src="${esc(t.preview)}" alt="" loading="lazy">` : ""}<span class="dot" style="background:conic-gradient(${esc(t.palette.bgBase)} 0 25%,${esc(t.palette.accentPrimary)} 0 50%,${esc(t.palette.accentCyan || t.palette.accentPrimary)} 0 75%,${esc(t.palette.textPrimary)} 0)"></span></span>
           <span>${esc(t.name)}</span><small>${t.variant === "light" ? "Day" : "Night"}</small>
         </button>`).join("");
       syncPicker(); filterPicker();

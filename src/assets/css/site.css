@@ -147,8 +147,8 @@ code, kbd, pre { font-family: var(--mono); font-size: .9em; }
 }
 .swatch:hover { transform: translateY(-2px); border-color: var(--ae-bgBorder); }
 .swatch[aria-pressed="true"] { border-color: var(--ae-accentPrimary); background: var(--tint); }
-.swatch .chips { display: flex; height: 22px; border-radius: 4px; overflow: hidden; }
-.swatch .chips i { flex: 1; }
+.swatch .pic { position: relative; display: block; aspect-ratio: 16 / 10; border-radius: 4px; overflow: hidden; background: var(--ae-bgSurface); }
+.swatch .pic img { width: 100%; height: 100%; object-fit: cover; }
 .swatch small { color: var(--ae-textMuted); }
 
 /* ------------------------------------------------------------------- controls */
@@ -265,8 +265,10 @@ select { appearance: none; padding-right: 32px; cursor: pointer;
 .item .media img, .item .media video { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
 .item:hover .media img, .item:hover .media video { transform: scale(1.06); }
 .item .media .kind { position: absolute; top: 10px; left: 10px; }
-.item .media .palette { position: absolute; left: 10px; right: 10px; bottom: 10px; display: flex; height: 6px; border-radius: 3px; overflow: hidden; opacity: .95; }
-.item .media .palette i { flex: 1; }
+/* a theme's colours: one small square in the bottom right corner of its picture */
+.dot { position: absolute; right: 8px; bottom: 8px; width: 16px; height: 16px; border-radius: 4px;
+  border: 1px solid rgb(255 255 255 / .55); box-shadow: 0 1px 6px rgb(0 0 0 / .45); }
+.swatch .dot { right: 5px; bottom: 5px; width: 12px; height: 12px; border-radius: 3px; }
 .item .media.icon { display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, var(--ae-bgHover), var(--ae-bgBase)); }
 .item .media.icon img { width: 42%; height: auto; object-fit: contain; filter: drop-shadow(0 10px 24px rgb(0 0 0 / .4)); }
 .item .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
@@ -349,6 +351,14 @@ select { appearance: none; padding-right: 32px; cursor: pointer;
 .palette-big button { border: 1px solid var(--line); border-radius: var(--radius); background: var(--ae-bgBase); padding: 0; overflow: hidden; cursor: pointer; font: inherit; color: var(--ae-textSecondary); text-align: left; }
 .palette-big button i { display: block; height: 46px; }
 .palette-big button span { display: block; padding: 5px 8px; font-size: 11.5px; font-family: var(--mono); }
+.theme-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 700px) { .theme-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.theme-strip button { padding: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--ae-bgSurface); color: var(--ae-textPrimary);
+  overflow: hidden; cursor: pointer; font: inherit; text-align: left; transition: transform .2s var(--ease), border-color .15s; }
+.theme-strip button:hover { transform: translateY(-3px); border-color: var(--ae-accentPrimary); }
+.theme-strip .pic { position: relative; display: block; aspect-ratio: 16 / 10; background: var(--ae-bgBase); }
+.theme-strip .pic img { width: 100%; height: 100%; object-fit: cover; }
+.theme-strip .name { display: block; padding: 8px 10px; font-size: 13.5px; }
 /* an icon inside a sentence is the size of the text */
 :where(p, li, h1, h2, h3, h4, td, small, label) > svg { width: 1.1em; height: 1.1em; vertical-align: -.18em; }
 .heart { color: var(--ae-textSecondary); }

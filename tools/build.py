@@ -97,7 +97,8 @@ def load_themes(themes_dir, themes_repo):
         border = pal.pop("borderColors", None) or t.get("colors", [])[1:3]
         themes[tid] = {"name": t.get("name", tid), "family": t.get("family", t.get("name", tid)),
                        "variant": "light" if t.get("variant") == "light" else "dark",
-                       "about": t.get("about", ""), "palette": pal, "border": border}
+                       "about": t.get("about", ""), "palette": pal, "border": border,
+                       "preview": f"{cdn}/themes/{tid}/preview.jpg" if (tj.parent / "preview.jpg").is_file() else ""}
         items.append({
             "key": f"theme:{tid}", "kind": "theme", "id": tid, "name": t.get("name", tid), "about": t.get("about", ""),
             "by": t.get("author", "Aequalyn"), "license": "", "source": "built-in", "variant": themes[tid]["variant"],
@@ -322,17 +323,30 @@ def themes_gallery(themes, items):
         btns = f'<button class="btn" type="button" data-wear="{e(tid)}">{"Night" if pair else "Try it here"}</button>'
         if pair:
             btns += f'<button class="btn" type="button" data-wear="{e(pair)}">{ICONS["sun"]} Day</button>'
-        chips = "".join(f'<i style="background:{e(c)}"></i>' for c in it["colors"])
+        chips = theme_dot(t["palette"])
         out.append(f'<div class="item" data-tilt style="--i:{n % 9}"><span class="glare"></span>'
-                   f'<a href="/market/theme/{e(tid)}/" class="media" style="display:block"><img src="{e(it["preview"])}" alt="{e(t["name"])}, a preview" loading="lazy"><span class="palette">{chips}</span></a>'
+                   f'<a href="/market/theme/{e(tid)}/" class="media" style="display:block"><img src="{e(it["preview"])}" alt="{e(t["name"])}, a preview" loading="lazy">{chips}</a>'
                    f'<div class="body"><h3><a href="/market/theme/{e(tid)}/" style="color:inherit">{e(t["name"])}</a></h3><p>{e(t["about"])}</p>'
                    f'<div style="display:flex;gap:8px;margin-top:8px">{btns}</div></div></div>')
     return "".join(out)
 
 
+def dot(colors):
+    """a theme's colours as one small square, in quarters"""
+    c = [x for x in colors if x][:4] or ["#888"]
+    c += [c[-1]] * (4 - len(c))
+    return f'<span class="dot" style="background:conic-gradient({e(c[0])} 0 25%,{e(c[1])} 0 50%,{e(c[2])} 0 75%,{e(c[3])} 0)" aria-hidden="true"></span>'
+
+
+def theme_dot(pal):
+    return dot([pal.get("bgBase"), pal.get("accentPrimary"), pal.get("accentCyan"), pal.get("textPrimary")])
+
+
 def quick_themes(themes):
     pick = [t for t in ("aequalyn", "aequalyn-day", "gold", "emerald", "ruby", "cobalt", "frost-day", "lotus-day") if t in themes]
-    return "".join(f'<button type="button" data-wear="{e(t)}" title="Try {e(themes[t]["name"])}"><i style="background:linear-gradient(135deg,{e(themes[t]["palette"]["bgBase"])} 0 45%,{e(themes[t]["palette"]["accentPrimary"])} 45% 70%,{e(themes[t]["palette"].get("accentCyan", "#888"))} 70%)"></i><span>{e(themes[t]["name"])}</span></button>' for t in pick)
+    return "".join(f'<button type="button" data-wear="{e(t)}" title="Try {e(themes[t]["name"])} on this site">'
+                   f'<span class="pic"><img src="{e(themes[t]["preview"])}" alt="" loading="lazy">{theme_dot(themes[t]["palette"])}</span>'
+                   f'<span class="name">{e(themes[t]["name"])}</span></button>' for t in pick)
 
 
 def page(body, meta, ctx, path):

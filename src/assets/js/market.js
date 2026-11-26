@@ -36,7 +36,12 @@
     if (it.media === "icon") return `<div class="media icon"><img src="${esc(it.preview)}" alt="" loading="lazy" decoding="async"></div>`;
     return `<div class="media"><img src="${esc(it.preview)}" alt="" loading="lazy" decoding="async">${chips(it)}</div>`;
   }
-  const chips = it => it.colors?.length ? `<span class="palette">${it.colors.map(c => `<i style="background:${esc(c)}"></i>`).join("")}</span>` : "";
+  // a theme's colours as one small square in the corner, as in the theme picker
+  const chips = it => {
+    if (!it.colors?.length) return "";
+    const c = [it.colors[0], it.colors[2] || it.colors[0], it.colors[3] || it.colors[0], it.colors[1] || it.colors[0]].map(esc);
+    return `<span class="dot" style="background:conic-gradient(${c[0]} 0 25%,${c[1]} 0 50%,${c[2]} 0 75%,${c[3]} 0)" aria-hidden="true"></span>`;
+  };
   const metaLine = it => `<div class="meta">
       <span class="rated" title="${it.n ? `Rated ${(+it.r).toFixed(1)} of 5 by ${it.n}` : "Not rated yet"}">${icon("star")}${it.n ? `${(+it.r).toFixed(1)} <small>(${it.n})</small>` : "–"}</span>
       <span title="GitHub stars">${icon("github")}${num(it.stars)}</span>
