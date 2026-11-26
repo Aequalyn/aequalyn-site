@@ -349,6 +349,8 @@ select { appearance: none; padding-right: 32px; cursor: pointer;
 .palette-big button { border: 1px solid var(--line); border-radius: var(--radius); background: var(--ae-bgBase); padding: 0; overflow: hidden; cursor: pointer; font: inherit; color: var(--ae-textSecondary); text-align: left; }
 .palette-big button i { display: block; height: 46px; }
 .palette-big button span { display: block; padding: 5px 8px; font-size: 11.5px; font-family: var(--mono); }
+/* an icon inside a sentence is the size of the text */
+:where(p, li, h1, h2, h3, h4, td, small, label) > svg { width: 1.1em; height: 1.1em; vertical-align: -.18em; }
 .heart { color: var(--ae-textSecondary); }
 .heart[aria-pressed="true"] { color: var(--ae-accentRed); border-color: color-mix(in srgb, var(--ae-accentRed) 40%, transparent); }
 .heart[aria-pressed="true"] svg { fill: currentColor; animation: pop .45s var(--ease); }
