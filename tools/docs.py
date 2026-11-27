@@ -294,7 +294,9 @@ def load(src_dir, org, local=None):
                     if item[1] not in ids_seen:
                         ids_seen.add(item[1]); toc.append(item)
             html_out = "\n".join(body)
-            text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html.unescape(html_out))).strip()
+            stripped = re.sub(r"<[^>]+>", " ", html.unescape(html_out))
+            stripped = stripped.replace("\x01copy\x01", " ")
+            text = re.sub(r"\s+", " ", stripped).strip()
             pages.append({"slug": pg["slug"], "title": pg["title"], "section": sec["title"], "icon": sec.get("icon", ""),
                           "html": html_out, "toc": toc, "sources": sources, "text": text})
     return man, pages
