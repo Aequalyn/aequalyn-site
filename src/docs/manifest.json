@@ -30,6 +30,13 @@
           ]
         },
         {
+          "slug": "download-iso",
+          "title": "Download and re-assemble the ISO",
+          "parts": [
+            "local:download-iso.md"
+          ]
+        },
+        {
           "slug": "live-session",
           "title": "The live session",
           "parts": [
