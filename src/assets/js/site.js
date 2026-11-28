@@ -131,6 +131,25 @@
       card.addEventListener("pointerleave", () => { card.style.setProperty("--rx", "0deg"); card.style.setProperty("--ry", "0deg"); });
     });
   }
+  // feature cards: a large faint copy of the icon in the corner, and a light that follows
+  // the pointer across the card
+  function features(root = document) {
+    $$(".feature", root).forEach(card => {
+      const svg = $(".ico svg", card);
+      if (svg && !$(".echo", card)) {
+        const echo = document.createElement("span");
+        echo.className = "echo"; echo.setAttribute("aria-hidden", "true");
+        echo.append(svg.cloneNode(true));
+        card.append(echo);
+      }
+      if (reduced) return;
+      card.addEventListener("pointermove", e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--fx", (e.clientX - r.left) + "px");
+        card.style.setProperty("--fy", (e.clientY - r.top) + "px");
+      }, { passive: true });
+    });
+  }
   function reveal(root = document) {
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12 });
     $$(".reveal", root).forEach(el => io.observe(el));
@@ -179,7 +198,7 @@
       glow.style.setProperty("--mx", e.clientX + "px"); glow.style.setProperty("--my", e.clientY + "px"); }, { passive: true });
     $$("[data-copy]").forEach(b => b.addEventListener("click", () => copy(b.dataset.copy)));
     $$("[data-year]").forEach(el => (el.textContent = new Date().getFullYear()));
-    reveal(); tilt();
+    reveal(); tilt(); features();
   });
 
   window.AE = { $, $$, esc, num, store, stats, hearted, setHeart, toast, burst, copy, tilt, reveal, wear, loadThemes, reduced };
