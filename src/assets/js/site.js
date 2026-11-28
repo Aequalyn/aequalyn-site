@@ -122,17 +122,21 @@
   // A card leans toward the pointer and catches the light.
   function tilt(root = document) {
     if (reduced || matchMedia("(hover: none)").matches) return;
-    $$(".item[data-tilt]", root).forEach(card => {
+    $$(".item[data-tilt], .card:not(.rating, .detail aside .card)", root).forEach(card => {
+      if (card.dataset.tilted) return;
+      card.dataset.tilted = "1";
       card.addEventListener("pointermove", e => {
         const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-        card.style.setProperty("--ry", (x - .5) * 10 + "deg"); card.style.setProperty("--rx", (.5 - y) * 8 + "deg");
+        // a wide card leans less: the same corner lift whatever its size
+        const k = Math.min(1, 380 / r.width);
+        card.style.setProperty("--ry", (x - .5) * 10 * k + "deg"); card.style.setProperty("--rx", (.5 - y) * 8 * k + "deg");
         card.style.setProperty("--gx", x * 100 + "%"); card.style.setProperty("--gy", y * 100 + "%");
       });
       card.addEventListener("pointerleave", () => { card.style.setProperty("--rx", "0deg"); card.style.setProperty("--ry", "0deg"); });
     });
   }
-  // feature cards: a large faint copy of the icon in the corner, and a light that follows
-  // the pointer across the card
+  // feature cards: a large faint copy of the icon in the corner (the light and the lean are
+  // every card's, in tilt)
   function features(root = document) {
     $$(".feature", root).forEach(card => {
       const svg = $(".ico svg", card);
@@ -142,12 +146,6 @@
         echo.append(svg.cloneNode(true));
         card.append(echo);
       }
-      if (reduced) return;
-      card.addEventListener("pointermove", e => {
-        const r = card.getBoundingClientRect();
-        card.style.setProperty("--fx", (e.clientX - r.left) + "px");
-        card.style.setProperty("--fy", (e.clientY - r.top) + "px");
-      }, { passive: true });
     });
   }
   function reveal(root = document) {
