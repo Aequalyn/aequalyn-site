@@ -125,14 +125,27 @@
     $$(".item[data-tilt], .card:not(.rating, .detail aside .card)", root).forEach(card => {
       if (card.dataset.tilted) return;
       card.dataset.tilted = "1";
-      card.addEventListener("pointermove", e => {
-        const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      let r = null, frame = 0, px = 0, py = 0;
+      const draw = () => {
+        frame = 0;
+        if (!r) return;
+        const x = Math.min(1, Math.max(0, (px - r.left) / r.width)), y = Math.min(1, Math.max(0, (py - r.top) / r.height));
         // a wide card leans less: the same corner lift whatever its size
         const k = Math.min(1, 380 / r.width);
         card.style.setProperty("--ry", (x - .5) * 10 * k + "deg"); card.style.setProperty("--rx", (.5 - y) * 8 * k + "deg");
         card.style.setProperty("--gx", x * 100 + "%"); card.style.setProperty("--gy", y * 100 + "%");
+      };
+      card.addEventListener("pointerenter", () => { r = card.getBoundingClientRect(); });
+      card.addEventListener("pointermove", e => {
+        px = e.clientX; py = e.clientY;
+        if (!r) r = card.getBoundingClientRect();
+        if (!frame) frame = requestAnimationFrame(draw);
+      }, { passive: true });
+      card.addEventListener("pointerleave", () => {
+        r = null;
+        if (frame) { cancelAnimationFrame(frame); frame = 0; }
+        card.style.setProperty("--rx", "0deg"); card.style.setProperty("--ry", "0deg");
       });
-      card.addEventListener("pointerleave", () => { card.style.setProperty("--rx", "0deg"); card.style.setProperty("--ry", "0deg"); });
     });
   }
   // feature cards: a large faint copy of the icon in the corner (the light and the lean are
@@ -192,8 +205,13 @@
       b.append(i); setTimeout(() => i.remove(), 650);
     });
     const glow = $(".backdrop .glow");
-    if (glow && !reduced) addEventListener("pointermove", e => {
-      glow.style.setProperty("--mx", e.clientX + "px"); glow.style.setProperty("--my", e.clientY + "px"); }, { passive: true });
+    if (glow && !reduced) {
+      let gf = 0, gx = 0, gy = 0;
+      addEventListener("pointermove", e => {
+        gx = e.clientX; gy = e.clientY;
+        if (!gf) gf = requestAnimationFrame(() => { gf = 0; glow.style.setProperty("--mx", gx + "px"); glow.style.setProperty("--my", gy + "px"); });
+      }, { passive: true });
+    }
     $$("[data-copy]").forEach(b => b.addEventListener("click", () => copy(b.dataset.copy)));
     $$("[data-year]").forEach(el => (el.textContent = new Date().getFullYear()));
     reveal(); tilt(); features();

@@ -62,7 +62,7 @@ code, kbd, pre { font-family: var(--mono); font-size: .9em; }
 }
 .backdrop::before, .backdrop::after, .backdrop .orb {
   content: ""; position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; filter: blur(90px); opacity: .16;
-  animation: drift 26s ease-in-out infinite alternate;
+  animation: drift 26s ease-in-out infinite alternate; will-change: transform;
 }
 .backdrop::before { background: var(--ae-c1, var(--ae-edgeA)); top: -25vmax; left: -15vmax; }
 .backdrop::after { background: var(--ae-c2, var(--ae-edgeB)); bottom: -30vmax; right: -20vmax; animation-delay: -13s; }
@@ -71,10 +71,10 @@ code, kbd, pre { font-family: var(--mono); font-size: .9em; }
   top: 18vh; left: 52vw; animation-duration: 32s; animation-direction: alternate-reverse; animation-delay: -7s;
 }
 .backdrop .glow {
-  position: absolute; width: 520px; height: 520px; border-radius: 50%; translate: -50% -50%;
-  left: var(--mx, 50%); top: var(--my, 30%);
+  position: absolute; width: 520px; height: 520px; border-radius: 50%; left: 0; top: 0;
+  transform: translate(var(--mx, 50vw), var(--my, 30vh)) translate(-50%, -50%);
   background: radial-gradient(circle, color-mix(in srgb, var(--ae-accentPrimary) 14%, transparent), transparent 65%);
-  transition: left .25s linear, top .25s linear;
+  transition: transform .25s linear; will-change: transform;
 }
 /* day themes: their bases are all near white, so the veil is thinner, the colours stronger and
    the glass takes a little of the accent, or every day theme would look the same cream */
@@ -238,10 +238,11 @@ select { appearance: none; padding-right: 32px; cursor: pointer;
   background: conic-gradient(from var(--ang, 0deg), var(--ae-edgeA), var(--ae-edgeB), var(--ae-accentPrimary), var(--ae-edgeA));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
-  transition: opacity .25s; animation: spin 4s linear infinite;
+  transition: opacity .25s;
 }
 .card:hover { --lift: -3px; border-color: transparent; box-shadow: 0 18px 48px rgb(0 0 0 / .28); text-decoration: none; }
 .card:hover::before, .card:hover::after, .card:focus-visible::after { opacity: 1; }
+.card:hover::after, .card:focus-visible::after { animation: spin 4s linear infinite; }
 /* cards that are clicked on (the star rating, an item's install and hearts) stay still */
 :is(.card.rating, .detail aside .card) { transform: none; }
 :is(.card.rating, .detail aside .card):hover { --lift: 0px; box-shadow: none; border-color: var(--ae-bgBorder); }
@@ -365,14 +366,15 @@ select { appearance: none; padding-right: 32px; cursor: pointer;
 }
 @keyframes rise { from { opacity: 0; translate: 0 16px; } }
 .item:hover { text-decoration: none; box-shadow: 0 22px 60px rgb(0 0 0 / .35); border-color: transparent; }
-.item::before { /* the animated outline gradient */
-  content: ""; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; padding: 1px; opacity: 0;
+.item::before { /* the animated outline gradient, just inside the edge (the card clips its
+  overflow) and over the picture: only a line, the pointer goes through it */
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit; padding: 1px; opacity: 0;
   background: conic-gradient(from var(--ang, 0deg), var(--ae-edgeA), var(--ae-edgeB), var(--ae-accentPrimary), var(--ae-edgeA));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
-  transition: opacity .25s; animation: spin 4s linear infinite;
+  transition: opacity .25s;
 }
-.item:hover::before, .item:focus-visible::before { opacity: 1; }
+.item:hover::before, .item:focus-visible::before { opacity: 1; animation: spin 4s linear infinite; }
 @property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
 @keyframes spin { to { --ang: 360deg; } }
 .item .glare { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s; z-index: 2;
