@@ -1,4 +1,4 @@
-# Aequalyn site on Apache (easyhost): errors, https, caching and a few safe headers.
+# Aequalyn site on Apache: errors, https, caching and a few safe headers.
 Options -Indexes
 DirectoryIndex index.html index.php
 ErrorDocument 404 /404.html
@@ -9,6 +9,8 @@ ErrorDocument 404 /404.html
   RewriteCond %{HTTPS} !=on
   RewriteCond %{HTTP:X-Forwarded-Proto} !https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # the built-in themes are in the Market now (the old themes page is gone)
+  RewriteRule ^themes/?$ /market/?kind=theme [L,R=301]
 </IfModule>
 
 <IfModule mod_headers.c>

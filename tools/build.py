@@ -322,23 +322,6 @@ def news_page(posts, n):
 </article>"""
 
 
-def themes_gallery(themes, items):
-    by = {i["id"]: i for i in items if i["kind"] == "theme" and i["source"] == "built-in"}
-    out = []
-    for n, (tid, t) in enumerate(t for t in themes.items() if t[1]["variant"] == "dark" or t[1].get("pair") is None):
-        it = by[tid]
-        pair = t.get("pair")
-        btns = f'<button class="btn" type="button" data-wear="{e(tid)}">{"Night" if pair else "Try it here"}</button>'
-        if pair:
-            btns += f'<button class="btn" type="button" data-wear="{e(pair)}">{ICONS["sun"]} Day</button>'
-        chips = theme_dot(t["palette"])
-        out.append(f'<div class="item" data-tilt style="--i:{n % 9}"><span class="glare"></span>'
-                   f'<a href="/market/theme/{e(tid)}/" class="media" style="display:block"><img src="{e(it["preview"])}" alt="{e(t["name"])}, a preview" loading="lazy">{chips}</a>'
-                   f'<div class="body"><h3><a href="/market/theme/{e(tid)}/" style="color:inherit">{e(t["name"])}</a></h3><p>{e(t["about"])}</p>'
-                   f'<div style="display:flex;gap:8px;margin-top:8px">{btns}</div></div></div>')
-    return "".join(out)
-
-
 def dot(colors):
     """a theme's colours as one small square, in quarters"""
     c = [x for x in colors if x][:4] or ["#888"]
@@ -498,7 +481,7 @@ def main():
         "discord": e(cfg.get("discord", "https://discord.gg/VwfceB5JbZ")),
         "operator": e(cfg["operator"]), "updated_legal": e(cfg["updated_legal"]), "version": version,
         "contact_email_line": f' Or email <a href="mailto:{e(email)}">{e(email)}</a>.' if email else "",
-        "quick_themes": quick_themes(themes), "themes_gallery": themes_gallery(themes, items), "sprite": sprite,
+        "quick_themes": quick_themes(themes), "sprite": sprite,
         "team": team_html(cfg.get("team", [])), "default_wall": wall_style(themes.get("aequalyn"))}}
 
     # pages
@@ -546,7 +529,7 @@ def main():
     mark = ICONS["mark"].replace('class="mark" ', 'xmlns="http://www.w3.org/2000/svg" ').replace("currentColor", "#4fc1b0")
     write(out, "assets/img/favicon.svg", mark)
     base = cfg["url"].rstrip("/")
-    urls = (["/", "/market/", "/themes/", "/docs/", "/news/", "/team/", "/community/", "/contact/", "/privacy/", "/terms/"]
+    urls = (["/", "/market/", "/docs/", "/news/", "/team/", "/community/", "/contact/", "/privacy/", "/terms/"]
             + [f"/docs/{p['slug']}/" for p in dpages] + [p["url"] for p in posts] + [i["url"] for i in items])
     write(out, "sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
           + "".join(f"  <url><loc>{e(base + u)}</loc></url>\n" for u in urls) + "</urlset>\n")

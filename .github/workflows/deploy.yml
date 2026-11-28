@@ -1,4 +1,4 @@
-# Build the site and upload it to the host (easyhost) over FTPS.
+# Build the site and upload it to the host over FTPS.
 #
 # Runs on every push to main, once a day (the docs follow the repositories), by hand, and when the
 # Market approves something (aequalyn-market sends a "market-updated" repository_dispatch).
