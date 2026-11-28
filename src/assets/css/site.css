@@ -500,10 +500,10 @@ kbd { font-family: var(--mono); font-size: 11.5px; padding: 1px 6px; border-radi
 .docs-body .code:hover .copy-code, .docs-body .copy-code:focus-visible { opacity: 1; }
 @media (hover: none) { .docs-body .copy-code { opacity: 1; } }
 .docs-body .table { overflow-x: auto; margin: 0 0 1.2em; border: 1px solid var(--line); border-radius: var(--radius); }
-.docs-body table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.docs-body th, .docs-body td { padding: 8px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
-.docs-body th { color: var(--ae-textPrimary); background: var(--ae-bgSurface); font-weight: 600; }
-.docs-body tr:last-child td { border-bottom: 0; }
+.docs-body table, .prose table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.docs-body th, .docs-body td, .prose th, .prose td { padding: 8px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+.docs-body th, .prose th { color: var(--ae-textPrimary); background: var(--ae-bgSurface); font-weight: 600; }
+.docs-body tr:last-child td, .prose tr:last-child td { border-bottom: 0; }
 .docs-body tbody tr:hover td { background: color-mix(in srgb, var(--ae-bgHover) 50%, transparent); }
 .docs-body .table.gallery { border: 0; }
 .docs-body .gallery td { padding: 4px; border: 0; width: 50%; }

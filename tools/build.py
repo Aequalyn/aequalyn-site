@@ -546,7 +546,7 @@ def main():
     mark = ICONS["mark"].replace('class="mark" ', 'xmlns="http://www.w3.org/2000/svg" ').replace("currentColor", "#4fc1b0")
     write(out, "assets/img/favicon.svg", mark)
     base = cfg["url"].rstrip("/")
-    urls = (["/", "/market/", "/themes/", "/docs/", "/news/", "/team/", "/contact/", "/privacy/", "/terms/"]
+    urls = (["/", "/market/", "/themes/", "/docs/", "/news/", "/team/", "/community/", "/contact/", "/privacy/", "/terms/"]
             + [f"/docs/{p['slug']}/" for p in dpages] + [p["url"] for p in posts] + [i["url"] for i in items])
     write(out, "sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
           + "".join(f"  <url><loc>{e(base + u)}</loc></url>\n" for u in urls) + "</urlset>\n")

@@ -1,0 +1,56 @@
+<!--meta {"title": "Community · Aequalyn", "description": "Where to talk about Aequalyn, how we treat each other, and how to publish a plugin, theme, cursor, wallpaper pack, look or app in the Market."} -->
+<div class="wrap prose">
+  <span class="eyebrow">Community</span>
+  <h1>Make Aequalyn with us</h1>
+  <p>Talk with other people who use it, share your setup, and publish what you make in the Market, where every Aequalyn Store finds it.</p>
+
+  <div class="grid-3" style="margin:28px 0">
+    <a class="card feature" href="{{discord}}" rel="noopener"><div class="ico">{{icon:discord}}</div><h3>Discord</h3><p>Questions, setups and help, as it happens.</p></a>
+    <a class="card feature" href="https://www.reddit.com/r/Aequalyn/" rel="noopener"><div class="ico">{{icon:reddit}}</div><h3>Reddit</h3><p>Setups, ideas and longer threads on r/Aequalyn.</p></a>
+    <a class="card feature" href="{{market_repo}}/issues/new/choose" rel="noopener"><div class="ico">{{icon:store}}</div><h3>Publish</h3><p>A plugin, theme, cursor, wallpaper pack, look or app: the Market's forms.</p></a>
+  </div>
+
+  <h2 id="rules">The rules</h2>
+  <p>The same everywhere we meet: on Discord, on Reddit, in issues and in the Market.</p>
+  <ul>
+    <li><strong>Be kind.</strong> No harassment, insults or hate, about anyone, for any reason.</li>
+    <li><strong>Help, don't gatekeep.</strong> Everybody started somewhere; answer the question that was asked.</li>
+    <li><strong>No malware, no piracy.</strong> Nothing that hides what it does, takes what is not yours, or ships fonts, pictures or code without the right to.</li>
+    <li><strong>No spam.</strong> Share what you made where it fits, once; no ads, no referral links.</li>
+    <li><strong>Credit what you build on.</strong> Say where wallpapers, icons and code come from, with their license.</li>
+    <li><strong>Security problems go privately to the maintainers</strong>, not into a public thread, so they can be fixed first.</li>
+  </ul>
+  <p>Moderators may remove what breaks them, and remove whoever keeps breaking them.</p>
+
+  <h2 id="publish">Publish in the Market</h2>
+  <ol>
+    <li>Read the guidelines for what you made: <a href="{{market_repo}}/blob/main/docs/guidelines/plugin.md" rel="noopener">plugin</a>, <a href="{{market_repo}}/blob/main/docs/guidelines/theme.md" rel="noopener">theme</a>, <a href="{{market_repo}}/blob/main/docs/guidelines/cursor.md" rel="noopener">cursor</a>, <a href="{{market_repo}}/blob/main/docs/guidelines/wallpaper.md" rel="noopener">wallpaper pack</a>, <a href="{{market_repo}}/blob/main/docs/guidelines/look.md" rel="noopener">look</a> or <a href="{{market_repo}}/blob/main/docs/guidelines/app.md" rel="noopener">app</a>.</li>
+    <li>Name its repository after it (below) and put it on GitHub.</li>
+    <li>Run the checks the bot runs: <code>aequalyn-store check &lt;kind&gt; . --market</code>.</li>
+    <li>Open an issue with the Publish form for its kind. The bot pins the commit, checks it and posts a report.</li>
+    <li>A reviewer reads it. Approved, it goes into the catalog at that exact commit, and every Store offers it.</li>
+  </ol>
+  <p>A Store installs only the commit that was reviewed. To update, push the new version and open the Update form: until it is reviewed too, what you pushed reaches nobody.</p>
+
+  <h2 id="names">Repository names and ids</h2>
+  <p>An item's id is the name the Store installs it under, so no two may be mistaken for each other. As Omarchy names a theme by its repository, the repository carries the id:</p>
+  <table>
+    <thead><tr><th>Kind</th><th>Repository</th><th>Id</th></tr></thead>
+    <tbody>
+      <tr><td>Plugin</td><td><code>aequalyn-plugin-dev-stats</code></td><td><code>dev-stats</code></td></tr>
+      <tr><td>Theme</td><td><code>aequalyn-theme-lichen</code></td><td><code>lichen</code></td></tr>
+      <tr><td>Cursor</td><td><code>aequalyn-cursor-facet</code></td><td><code>facet</code></td></tr>
+      <tr><td>Wallpaper pack</td><td><code>aequalyn-wallpapers-lichen</code></td><td><code>lichen</code></td></tr>
+      <tr><td>Look</td><td><code>aequalyn-look-lichen</code></td><td><code>lichen</code></td></tr>
+      <tr><td>App</td><td><code>aequalyn-app-nudu</code></td><td><code>nudu</code></td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li>An id is lowercase letters and digits with single dashes between them, up to 40 characters.</li>
+    <li>It is not one of Aequalyn's own: the shell's plugins, the built-in themes, wallpapers, cursor and looks, nor <code>aequalyn</code>, <code>official</code>, <code>builtin</code>, <code>default</code>, <code>system</code> or <code>core</code>.</li>
+    <li>It does not read the same as another repository's id of the same kind: <code>dev-stats</code>, <code>devstats</code> and <code>dev.stats</code> are one name, and the first to publish it keeps it.</li>
+    <li>Two kinds may share a name: <code>theme:lichen</code> and <code>look:lichen</code>.</li>
+    <li>Once in the catalog, an id never changes, and only who published it, or owns its repository, can update it.</li>
+  </ul>
+  <p>The bot checks all of this before a person reads anything; the <a href="{{market_repo}}#names-and-ids" rel="noopener">Market's README</a> has the details.</p>
+</div>
