@@ -1,5 +1,5 @@
 // The market: every built-in and approved item, filtered, sorted and shown nine to a page,
-// in one of five views: grid and list (as on the Omarchy site), and three after Aequalyn's
+// in one of five views: grid and list, and three after Aequalyn's
 // own pickers: carousel (the theme picker), filmstrip (the wallpaper picker), spotlight
 // (the layout picker's large preview beside its list).
 (() => {

@@ -24,7 +24,7 @@ the contact form. No database.
 ## The Market on the site
 
 - Nine items to a page: three by three on a computer, one on a phone.
-- Five views: **grid** and **list** (as on the Omarchy site), and three after Aequalyn's own
+- Five views: **grid** and **list**, and three after Aequalyn's own
   pickers: **carousel** (the theme picker), **filmstrip** (the wallpaper picker) and
   **spotlight** (the layout picker's large preview beside its list).
 - Filters for the kind, built in or community, night or day, and a search; sorting by
