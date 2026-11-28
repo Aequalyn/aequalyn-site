@@ -199,7 +199,12 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--a
 select { appearance: none; padding-right: 32px; cursor: pointer;
   background-image: linear-gradient(45deg, transparent 50%, var(--ae-textMuted) 50%), linear-gradient(135deg, var(--ae-textMuted) 50%, transparent 50%);
   background-position: calc(100% - 17px) 55%, calc(100% - 12px) 55%; background-size: 5px 5px; background-repeat: no-repeat; }
-.segments { display: inline-flex; padding: 3px; gap: 2px; background: var(--ae-bgBase); border: 1px solid var(--line); border-radius: var(--radius); }
+/* a row of buttons in one frame: the frame is always as wide as its buttons (a squeezed one
+   left the last button outside it), and scrolls within itself if the page is narrower still */
+.segments { display: inline-flex; flex-wrap: nowrap; width: max-content; max-width: 100%; overflow-x: auto; scrollbar-width: none;
+  padding: 3px; gap: 2px; background: var(--ae-bgBase); border: 1px solid var(--line); border-radius: var(--radius); }
+.segments button { flex-shrink: 0; }
+.segments button:focus-visible { outline-offset: -2px; } /* inside: the frame clips what is outside it */
 .segments button {
   display: flex; align-items: center; gap: 6px; padding: 6px 10px; border: 0; border-radius: 4px; background: none;
   color: var(--ae-textSecondary); font: inherit; font-size: 13px; cursor: pointer; transition: background-color .15s, color .15s;
@@ -352,7 +357,7 @@ select { appearance: none; padding-right: 32px; cursor: pointer;
 .kinds a:hover { color: var(--ae-textPrimary); border-color: var(--ae-bgBorder); text-decoration: none; }
 .kinds a[aria-current="true"] { background: var(--ae-bgSelected); color: var(--ae-textPrimary); border-color: var(--ae-accentPrimary); }
 .kinds a small { color: var(--ae-textMuted); margin-left: 4px; }
-.toolbar { display: grid; grid-template-columns: minmax(200px, 1fr) repeat(3, minmax(130px, 170px)) auto; gap: 10px; align-items: center; margin-bottom: 22px; }
+.toolbar { display: grid; grid-template-columns: minmax(200px, 1fr) repeat(3, minmax(130px, 170px)) max-content; gap: 10px; align-items: center; margin-bottom: 22px; }
 @media (max-width: 1000px) { .toolbar { grid-template-columns: 1fr 1fr; } .toolbar .search { grid-column: 1 / -1; } .toolbar .segments { grid-column: 1 / -1; justify-self: start; overflow-x: auto; max-width: 100%; } }
 .result-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 13px; color: var(--ae-textMuted); }
 
